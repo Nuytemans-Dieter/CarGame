@@ -6,16 +6,30 @@
 #define UNTITLED_SDLCAR_H
 
 
-#include "../../Car.h"
+#include "../../GameObjects/Car.h"
+#include "SDLTexture.h"
+#include "SDLRenderer.h"
 
 class SDLCar : public Car {
 public:
-    SDLCar();
+    //Create a Car with default color
+    SDLCar(SDLRenderer*);
+    //Create a Car with a chosen color
+    SDLCar(SDLRenderer*, Color);
+
     ~SDLCar();
+
+    std::string getImagePath();
 
     void visualize() override;
 
+private:
+    //Initialize car fields
+    void prepare(SDLRenderer*, Color);
 
+    SDLTexture* texture;
+    SDLRenderer* renderer;
+    Color* carColor;
 };
 
 

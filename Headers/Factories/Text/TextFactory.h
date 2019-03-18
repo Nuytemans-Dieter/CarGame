@@ -8,6 +8,7 @@
 
 #include "../AbstractFactory.h"
 #include "TextCar.h"
+#include "../../GameObjects/Car.h"
 
 class TextFactory : public AbstractFactory {
 

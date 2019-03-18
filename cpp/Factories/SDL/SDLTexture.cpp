@@ -2,22 +2,19 @@
 // Created by Dieter on 11/03/2019.
 //
 
-#include "../../Headers/Factories/SDL/SDLTexture.h"
+#include "../../../Headers/Factories/SDL/SDLTexture.h"
 
-SDLTexture::SDLTexture(SDL_Window* gWindow, SDL_Renderer* gRenderer) {
+SDLTexture::SDLTexture() {
     texture = NULL;
     width = 0;
     height = 0;
-
-    window = gWindow;
-    renderer = gRenderer;
 }
 
 SDLTexture::~SDLTexture() {
     free();
 }
 
-bool SDLTexture::loadImage(std::string path) {
+bool SDLTexture::loadImage(std::string path, SDL_Renderer* renderer) {
     free(); //Clear the current image
 
     std::string fullPath = "..//resources//";
@@ -50,6 +47,8 @@ bool SDLTexture::loadImage(std::string path) {
     return texture != NULL;
 }
 
+
+
 void SDLTexture::free() {
     if (texture != NULL)
     {
@@ -60,15 +59,14 @@ void SDLTexture::free() {
     }
 }
 
-void SDLTexture::render(int x, int y) {
-    SDL_Rect renderQuad = {x, y, width, height};
-    SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
-}
-
 int SDLTexture::getWidth() {
     return width;
 }
 
 int SDLTexture::getHeight() {
     return height;
+}
+
+SDL_Texture* SDLTexture::getTexture() {
+    return texture;
 }

@@ -13,5 +13,6 @@ int main( int argc, char *argv[] )
     Game *game = new Game(aFact);
     game->start();
 
+
     return 0;
 }

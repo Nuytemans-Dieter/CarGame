@@ -6,12 +6,20 @@
 #define UNTITLED_ABSTRACTFACTORY_H
 
 
-#include "../Car.h"
+#include "../GameObjects/Car.h"
+#include "SDL/SDLRenderer.h"
+#include "../Background.h"
 
 class AbstractFactory {
 public:
     AbstractFactory();
     virtual Car* createCar()=0;
+    virtual Car* createCar(Car::Color)=0;
+    virtual Background* createBackground()=0;
+    //Prepare tasks that must happen before the render process
+    virtual void startRendering()=0;
+    //Perform final tasks after rendering
+    virtual void finishRendering()=0;
     ~AbstractFactory();
 };
 

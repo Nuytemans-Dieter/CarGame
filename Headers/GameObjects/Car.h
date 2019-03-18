@@ -6,9 +6,20 @@
 #define UNTITLED_CAR_H
 
 
-class Car {
+#include "GameObject.h"
+
+class Car : public GameObject{
 
 public:
+    enum Color {
+        BLACK,
+        BLUE,
+        GREY,
+        WHITE,
+        GREEN,
+        RED
+    };
+
     Car();
     virtual void visualize() = 0;
     ~Car();

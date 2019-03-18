@@ -16,6 +16,8 @@ public:
     void gameLoop();
     ~Game();
 
+private:
+    AbstractFactory *factory;
 };
 
 
