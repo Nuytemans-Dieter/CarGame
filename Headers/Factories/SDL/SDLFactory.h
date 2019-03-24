@@ -24,16 +24,14 @@ public:
     bool init();
 
     /**
-     * Closes the created game screen
-     */
-    void close();
-
-    /**
      * Various methods to create a visual representation of game objects
      */
      Car* createCar();
      Car* createCar(SDLCar::Color);
      Background* createBackground();
+
+     //Close everything
+     void quit();
 
      void startRendering();
      void finishRendering();

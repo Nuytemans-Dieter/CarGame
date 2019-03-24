@@ -5,8 +5,7 @@
 #include "../../Headers/GameObjects/Car.h"
 
 Car::Car() {
-    setXPos(0);
-    setYPos(0);
+
 }
 
 Car::~Car() {

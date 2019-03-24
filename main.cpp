@@ -4,13 +4,15 @@
 #include "Headers/Factories/AbstractFactory.h"
 #include "Headers/Game.h"
 #include "Headers/Factories/SDL/SDLFactory.h"
+#include "Headers/Events/SDL/SDLEventReader.h"
 
 using namespace std;
 
 int main( int argc, char *argv[] )
 {
     AbstractFactory* aFact = new SDLFactory();
-    Game *game = new Game(aFact);
+    AbstractEventReader* aEvent = new SDLEventReader();
+    Game *game = new Game(aFact, aEvent);
     game->start();
 
 

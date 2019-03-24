@@ -17,6 +17,8 @@ SDLCar::SDLCar(SDLRenderer* rendererIn) {
 SDLCar::SDLCar(SDLRenderer* rendererIn, Color color)
 {
     prepare(rendererIn,color);
+    setWidth(texture->getWidth());
+    setHeight(texture->getHeight());
 }
 
 void SDLCar::prepare(SDLRenderer* rendererIn, Color color)
@@ -49,7 +51,7 @@ std::string SDLCar::getImagePath() {
         default: //Red
             filePath.append("red");
     }
-    filePath.append("Car.png");
+    filePath.append("CarSmall.png");
 
     return filePath;
 }

@@ -16,12 +16,11 @@ public:
     SDLCar(SDLRenderer*);
     //Create a Car with a chosen color
     SDLCar(SDLRenderer*, Color);
-
     ~SDLCar();
 
     std::string getImagePath();
 
-    void visualize() override;
+    void visualize();
 
 private:
     //Initialize car fields

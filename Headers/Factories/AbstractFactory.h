@@ -13,13 +13,17 @@
 class AbstractFactory {
 public:
     AbstractFactory();
+
     virtual Car* createCar()=0;
     virtual Car* createCar(Car::Color)=0;
     virtual Background* createBackground()=0;
-    //Prepare tasks that must happen before the render process
+
+    //Prepare tasks that must happen before the render process (ex. clear the screen)
     virtual void startRendering()=0;
-    //Perform final tasks after rendering
+    //Perform final tasks after rendering, including a delay (if needed)
     virtual void finishRendering()=0;
+    //Destroy everything related to the factory
+    virtual void quit()=0;
     ~AbstractFactory();
 };
 

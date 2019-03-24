@@ -6,19 +6,21 @@
 #define UNTITLED_ABSTRACTWINDOWCLOSER_H
 
 
-class EventReader {
+class AbstractEventReader {
 public:
     enum event {
         WINDOW_CLOSE,
-        ESC,
         ARROW_LEFT,
+        ARROW_UP,
         ARROW_RIGHT,
+        ARROW_DOWN,
         SPACEBAR,
+        ESC,
         NONE
     };
 
-    EventReader();
-    ~EventReader();
+    AbstractEventReader();
+    ~AbstractEventReader();
 
     virtual event getCurrentEvent() = 0;
 

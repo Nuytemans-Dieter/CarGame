@@ -7,6 +7,7 @@ SDLBackground::SDLBackground(SDLRenderer * rendererIn) {
     renderer = rendererIn;
     texture = new SDLTexture();
     texture->loadImage("..//resources//road2.png", renderer->getSDL_Renderer());
+
 }
 
 void SDLBackground::visualize() {

@@ -6,9 +6,15 @@
 #define UNTITLED_SDLEVENTREADER_H
 
 
-#include "../EventReader.h"
+#include "../AbstractEventReader.h"
 
-class SDLEventReader : public EventReader {
+class SDLEventReader : public AbstractEventReader {
+
+public:
+    SDLEventReader();
+    ~SDLEventReader();
+
+    AbstractEventReader::event getCurrentEvent();
 
 };
 

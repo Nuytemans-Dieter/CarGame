@@ -53,7 +53,7 @@ bool SDLFactory::init() {
     return success;
 }
 
-void SDLFactory::close() {
+void SDLFactory::quit() {
     //Destroy renderer
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
@@ -67,11 +67,12 @@ void SDLFactory::close() {
 }
 
 Car* SDLFactory::createCar() {
-    return new SDLCar(renderHandler);
+    return SDLFactory::createCar(SDLCar::RED);
 }
 
 Car* SDLFactory::createCar(SDLCar::Color color) {
-    return new SDLCar(renderHandler, color);
+    Car* c = new SDLCar(renderHandler, color);
+    return c;
 }
 
 Background* SDLFactory::createBackground()
@@ -80,7 +81,7 @@ Background* SDLFactory::createBackground()
 }
 
 SDLFactory::~SDLFactory() {
-    close();
+    quit();
 }
 
 void SDLFactory::startRendering() {
@@ -89,5 +90,5 @@ void SDLFactory::startRendering() {
 
 void SDLFactory::finishRendering() {
     SDL_RenderPresent(renderer);
-    SDL_Delay(20);
+    SDL_Delay(10);
 }

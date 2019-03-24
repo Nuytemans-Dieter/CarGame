@@ -17,9 +17,15 @@ public:
     int getLocation();
     //Move down x pixels
     void moveDown(int x);
+    //Reset the background to the default location
+    void resetLocation();
+
+    //Choose the Y-coordinate to which the background should reset
+    void setResetLocation(int);
 
 private:
     int location;
+    int resetLocationY;
 };
 
 

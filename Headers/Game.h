@@ -7,17 +7,19 @@
 
 
 #include "Factories/AbstractFactory.h"
+#include "Events/AbstractEventReader.h"
 
 class Game {
 public:
 
-    Game(AbstractFactory *aFact);
+    Game(AbstractFactory*, AbstractEventReader*);
     void start();
     void gameLoop();
     ~Game();
 
 private:
     AbstractFactory *factory;
+    AbstractEventReader *eventReader;
 };
 
 
