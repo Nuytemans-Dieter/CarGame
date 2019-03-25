@@ -33,22 +33,17 @@ void Game::gameLoop() {
     score->setPosition(1,10);
 
     TextOverlay* lives = factory->createTextOverlay();
-    lives->setPosition(600,10);
+    lives->setPosition(565,10);
     lives->setText("Lives: 3");
 
     Background* bg = factory->createBackground();
     bg->setResetLocation(-592);
     bg->resetLocation();
 
-    Car* car = factory->createCar(Car::RED);
-    car->setXPos(95); car->setYPos(400);
-    car->setBoundaries(80,250,560,640);
-    cars.push_front(car);
-
-    Car* c = factory->createCar(Car::BLUE);
-    c->setXPos(120); c->setYPos(-350);
-    c->setYVelocity(2);
-    cars.push_back(c);
+    Car* player = factory->createCar(Car::RED);
+    player->setXPos(95); player->setYPos(400);
+    player->setBoundaries(80,250,560,640);
+    cars.push_front(player);
 
     while (isPlaying)
     {
@@ -65,17 +60,29 @@ void Game::gameLoop() {
                 factory->quit();
                 isPlaying = false;
                 break;
-            case AbstractEventReader::ARROW_LEFT:
-                car->setXVelocity(-playerVelocity);     break;
-            case AbstractEventReader::ARROW_RIGHT:
-                car->setXVelocity(playerVelocity);      break;
-            case AbstractEventReader::ARROW_UP:
-                car->setYVelocity( -playerVelocity );   break;
-            case AbstractEventReader::ARROW_DOWN:
-                car->setYVelocity( playerVelocity );    break;
+            case AbstractEventReader::LEFT:
+                player->setXVelocity(-playerVelocity);     break;
+            case AbstractEventReader::RIGHT:
+                player->setXVelocity(playerVelocity);      break;
+            case AbstractEventReader::UP:
+                player->setYVelocity( -playerVelocity );   break;
+            case AbstractEventReader::DOWN:
+                player->setYVelocity( playerVelocity );    break;
+            case AbstractEventReader::UPRIGHT:
+                player->setXVelocity( playerVelocity );
+                player->setYVelocity( - playerVelocity );    break;
+            case AbstractEventReader::UPLEFT:
+                player->setXVelocity( - playerVelocity );
+                player->setYVelocity( - playerVelocity );    break;
+            case AbstractEventReader::DOWNRIGHT:
+                player->setXVelocity( playerVelocity );
+                player->setYVelocity( playerVelocity );    break;
+            case AbstractEventReader::DOWNLEFT:
+                player->setXVelocity( - playerVelocity );
+                player->setYVelocity( playerVelocity );    break;
             case AbstractEventReader::NONE:
-                car->setXVelocity(0);
-                car->setYVelocity(0);
+                player->setXVelocity(0);
+                player->setYVelocity(0);
                 break;
 //            case AbstractEventReader::ESC:
         }
@@ -90,19 +97,11 @@ void Game::gameLoop() {
 //        {
 //
 //        }
-        car->updateLocation();
-        c->updateLocation();
-
-        if (c->getYPos() == 640)
-            c->setYPos(-250);
-
+        player->updateLocation();
         /**
          * Collision detection
          */
-        if (car->isColliding(c))
-        {
-            factory->quit(); isPlaying = false;
-        }
+
 
         /**
          * Visualize
@@ -110,8 +109,7 @@ void Game::gameLoop() {
         factory->startRendering();
 
         bg->visualize();
-        car->visualize();
-        c->visualize();
+        player->visualize();
 
         score->render();
         lives->render();

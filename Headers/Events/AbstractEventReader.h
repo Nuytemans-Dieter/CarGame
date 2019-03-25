@@ -10,10 +10,14 @@ class AbstractEventReader {
 public:
     enum event {
         WINDOW_CLOSE,
-        ARROW_LEFT,
-        ARROW_UP,
-        ARROW_RIGHT,
-        ARROW_DOWN,
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        UPRIGHT,
+        UPLEFT,
+        DOWNLEFT,
+        DOWNRIGHT,
         SPACEBAR,
         ESC,
         NONE

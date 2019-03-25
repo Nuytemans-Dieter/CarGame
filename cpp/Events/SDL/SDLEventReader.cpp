@@ -33,16 +33,34 @@ AbstractEventReader::event SDLEventReader::getCurrentEvent() {
         } else
         {
             const Uint8 *state = SDL_GetKeyboardState(NULL);
-            if (state[ SDL_SCANCODE_RIGHT ] && !state[ SDL_SCANCODE_LEFT ])
-                return ARROW_RIGHT;
-            else if (state[ SDL_SCANCODE_LEFT ] && !state[ SDL_SCANCODE_RIGHT ])
-                return ARROW_LEFT;
-            else if (state[ SDL_SCANCODE_UP ] && !state[ SDL_SCANCODE_DOWN ])
-                return ARROW_UP;
-            else if (state[ SDL_SCANCODE_DOWN ] && !state [ SDL_SCANCODE_UP ])
-                return ARROW_DOWN;
-            else if (state[ SDL_SCANCODE_SPACE ])
-                return SPACEBAR;
+            int upVelocity = state [ SDL_SCANCODE_UP ] - state [ SDL_SCANCODE_DOWN ];
+            int rightVelocity = state [SDL_SCANCODE_RIGHT ] - state [ SDL_SCANCODE_LEFT ];
+
+            if (upVelocity > 0)
+            {
+                if (rightVelocity > 0)
+                    return UPRIGHT;
+                else if (rightVelocity < 0)
+                    return UPLEFT;
+                else return UP;
+            }
+            else if (upVelocity < 0)
+            {
+                if (rightVelocity > 0)
+                    return DOWNRIGHT;
+                else if (rightVelocity < 0)
+                    return DOWNLEFT;
+                else return DOWN;
+            } else
+            {
+                if (rightVelocity > 0)
+                    return RIGHT;
+                else if (rightVelocity < 0)
+                    return LEFT;
+            }
+
+//            if (state[ SDL_SCANCODE_SPACE ])
+//                return SPACEBAR;
         }
     }
     return NONE;
