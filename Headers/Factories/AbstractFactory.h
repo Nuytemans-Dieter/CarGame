@@ -9,6 +9,8 @@
 #include "../GameObjects/Car.h"
 #include "SDL/SDLRenderer.h"
 #include "../Background.h"
+#include "TextOverlay.h"
+#include "SDL/SDLTextOverlay.h"
 
 class AbstractFactory {
 public:
@@ -17,6 +19,7 @@ public:
     virtual Car* createCar()=0;
     virtual Car* createCar(Car::Color)=0;
     virtual Background* createBackground()=0;
+    virtual TextOverlay* createTextOverlay()=0;
 
     //Prepare tasks that must happen before the render process (ex. clear the screen)
     virtual void startRendering()=0;

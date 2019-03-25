@@ -14,12 +14,12 @@ SDLEventReader::~SDLEventReader() {}
 AbstractEventReader::event SDLEventReader::getCurrentEvent() {
     SDL_Event e;
 
-    if (SDL_PollEvent( &e ) != 0)
-    {
-        const Uint8 *state = SDL_GetKeyboardState(NULL);
-        if (state[SDL_SCANCODE_ESCAPE])
-            return ESC;
-    }
+//    if (SDL_PollEvent( &e ) != 0)
+//    {
+//        const Uint8 *state = SDL_GetKeyboardState(NULL);
+//        if (state[SDL_SCANCODE_ESCAPE])
+//            return ESC;
+//    }
 
 
     int i = 0;

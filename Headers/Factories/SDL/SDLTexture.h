@@ -32,8 +32,7 @@ public:
     int getHeight();
 
     SDL_Texture* getTexture();
-
-    void close();
+    void setTexture(SDL_Texture*, int h, int w);
 
 private:
     SDL_Texture* texture;

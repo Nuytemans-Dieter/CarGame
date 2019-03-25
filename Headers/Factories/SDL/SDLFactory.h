@@ -6,6 +6,7 @@
 #define UNTITLED_SDLFACTORY_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <string>
 #include "../../GameObjects/Car.h"
@@ -29,9 +30,13 @@ public:
      Car* createCar();
      Car* createCar(SDLCar::Color);
      Background* createBackground();
+     TextOverlay* createTextOverlay();
 
      //Close everything
      void quit();
+
+     //Render a message on a specified location
+     void renderMessage(std::string, int x, int y);
 
      void startRendering();
      void finishRendering();

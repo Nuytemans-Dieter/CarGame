@@ -47,6 +47,11 @@ bool SDLTexture::loadImage(std::string path, SDL_Renderer* renderer) {
     return texture != NULL;
 }
 
+void SDLTexture::setTexture(SDL_Texture * newTexture, int h, int w) {
+    free();
+    height = h; width = w;
+    texture = newTexture;
+}
 
 
 void SDLTexture::free() {

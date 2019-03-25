@@ -24,10 +24,17 @@ void Game::Game::start() {
 
 void Game::gameLoop() {
     bool isPlaying = true;
-    bool pause = false;
     int playerVelocity = 3;
+    int points = 0;
 
     std::list<Car*> cars;
+
+    TextOverlay* score = factory->createTextOverlay();
+    score->setPosition(1,10);
+
+    TextOverlay* lives = factory->createTextOverlay();
+    lives->setPosition(600,10);
+    lives->setText("Lives: 3");
 
     Background* bg = factory->createBackground();
     bg->setResetLocation(-592);
@@ -48,6 +55,9 @@ void Game::gameLoop() {
         /**
          * Move objects
          */
+        score->setText("Score: " + std::to_string(points));
+        points++;
+
 
         //Read input
         switch (eventReader->getCurrentEvent()) {
@@ -76,12 +86,12 @@ void Game::gameLoop() {
 
 
         //Move the car
-        for(std::list<Car*>::iterator it = cars.begin(); it != cars.end(); it++)
-        {
-
-        }
-//        car->updateLocation();
-//        c->updateLocation();
+//        for(std::list<Car*>::iterator it = cars.begin(); it != cars.end(); it++)
+//        {
+//
+//        }
+        car->updateLocation();
+        c->updateLocation();
 
         if (c->getYPos() == 640)
             c->setYPos(-250);
@@ -94,15 +104,18 @@ void Game::gameLoop() {
             factory->quit(); isPlaying = false;
         }
 
-        //std::cout << "xLoc:" << car->getXPos() << std::endl;
-
         /**
          * Visualize
          */
         factory->startRendering();
+
         bg->visualize();
         car->visualize();
         c->visualize();
+
+        score->render();
+        lives->render();
+
         factory->finishRendering();
     }
 }
