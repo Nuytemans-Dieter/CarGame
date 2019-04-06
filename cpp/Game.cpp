@@ -7,6 +7,7 @@
 #include "../Headers/Game.h"
 #include "../Headers/GameObjects/Car.h"
 #include "../Headers/Background.h"
+#include "../Headers/Chrono.h"
 
 Game::Game(AbstractFactory *aFact, AbstractEventReader *aEvent) {
     factory = aFact;
@@ -24,8 +25,10 @@ void Game::Game::start() {
 
 void Game::gameLoop() {
     bool isPlaying = true;
-    int playerVelocity = 3;
+    int playerVelocity = 5;
     int points = 0;
+
+    Chrono* chron = new Chrono();
 
     std::list<Car*> cars;
 
@@ -45,8 +48,14 @@ void Game::gameLoop() {
     player->setBoundaries(80,250,560,640);
     cars.push_front(player);
 
+    Car* c = factory->createCar(Car::GREEN);
+    c->setXPos(100); c->setYPos(-250);
+    int cSpeed = 3;
+    c->setYVelocity(cSpeed);
+
     while (isPlaying)
     {
+        chron->startTime();
         /**
          * Move objects
          */
@@ -88,7 +97,7 @@ void Game::gameLoop() {
         }
 
         //Handle background
-        bg->moveDown(8);
+        bg->moveDown(12);
         if (bg->getLocation() >= 0) bg->resetLocation();
 
 
@@ -98,10 +107,22 @@ void Game::gameLoop() {
 //
 //        }
         player->updateLocation();
+        c->updateLocation();
+
+        if (c->getYPos() >= 640) {
+            c->setYPos(-250);
+            c->setYVelocity(cSpeed++);
+        }
+
+
         /**
          * Collision detection
          */
-
+        if (player->isColliding(c))
+        {
+            isPlaying = false;
+            factory->quit();
+        }
 
         /**
          * Visualize
@@ -110,11 +131,15 @@ void Game::gameLoop() {
 
         bg->visualize();
         player->visualize();
+        c->visualize();
 
         score->render();
         lives->render();
 
         factory->finishRendering();
+
+        //17 corresponds to 60 fps
+        while (chron->getTimePassed() < 17) {}
     }
 }
 

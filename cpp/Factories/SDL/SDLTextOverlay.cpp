@@ -26,7 +26,7 @@ SDLTextOverlay::SDLTextOverlay(SDLRenderer* rend) {
 }
 
 SDLTextOverlay::~SDLTextOverlay() {
-
+    free();
 }
 
 void SDLTextOverlay::setPosition(int x, int y) {

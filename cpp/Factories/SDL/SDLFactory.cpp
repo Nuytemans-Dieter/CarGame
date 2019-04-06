@@ -120,5 +120,4 @@ void SDLFactory::startRendering() {
 
 void SDLFactory::finishRendering() {
     SDL_RenderPresent(renderer);
-    SDL_Delay(10);
 }
