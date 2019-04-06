@@ -73,24 +73,6 @@ void SDLFactory::quit() {
     SDL_Quit();
 }
 
-void SDLFactory::renderMessage(std::string str, int x, int y) {
-    TTF_Font* font = TTF_OpenFont("..//resources//Fonts//roundFont.ttf", 24);
-
-    SDL_Color color = {255, 255, 255, 255};
-
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, str.c_str(), color);
-
-    SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-
-    SDL_Rect Message_rect;
-    Message_rect.x = 20;
-    Message_rect.y = 20;
-    Message_rect.w = 500;
-    Message_rect.h = 200;
-
-    SDL_RenderCopy(renderer, message, NULL, &Message_rect);
-}
-
 Car* SDLFactory::createCar() {
     return SDLFactory::createCar(SDLCar::RED);
 }
