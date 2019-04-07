@@ -94,6 +94,11 @@ TextOverlay *SDLFactory::createTextOverlay() {
     return to;
 }
 
+TextOverlay *SDLFactory::createTextOverlay(int height) {
+    TextOverlay* to = new SDLTextOverlay(renderHandler, height);
+    return to;
+}
+
 Background* SDLFactory::createBackground()
 {
     return new SDLBackground(renderHandler);

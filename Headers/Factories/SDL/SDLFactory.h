@@ -32,6 +32,7 @@ public:
      Laser* createLaser();
      Background* createBackground();
      TextOverlay* createTextOverlay();
+     TextOverlay* createTextOverlay(int); //Creates text overlay with a given pixel height
 
      //Close everything
      void quit();

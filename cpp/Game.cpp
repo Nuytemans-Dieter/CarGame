@@ -56,6 +56,7 @@ void Game::gameLoop() {
     const int numCarColors = 6;                     //Must be equal to the size of the Car::Color enum!
     int backgroundMoveDownSpeed = 12;               //The speed at which the background moves down each frame
     const int screenHeight = 640;                   //The height of the screen
+    const int screenWidth = 640;                    //The width of the screen
 
 
     //Timing settings
@@ -63,6 +64,7 @@ void Game::gameLoop() {
     const int fpsRefreshRate = 1000;                //After how many milliseconds the fps counter should update
     const int invincibleTime = 2000;                //The time in milliseconds that the player is invincible after being hit
     const int shootDelay = 500;                     //The minumum time between two shots
+    const int textDuration = 2000;                  //The time (ms) in which a pop-up text will be visible
 
 
     //Initialize chronos & start timing if needed
@@ -70,6 +72,7 @@ void Game::gameLoop() {
     Chrono* fpsRefresh = new Chrono(fpsRefreshRate);
     Chrono* hitTimer = new Chrono();
     Chrono* shootTimer = new Chrono();
+    Chrono* textTimer = new Chrono();
 
     fpsRefresh->startTime();
     hitTimer->startTime();
@@ -86,25 +89,27 @@ void Game::gameLoop() {
 
     //Create score overlay
     TextOverlay* score = factory->createTextOverlay();
-    score->setPosition(1,10);
-
-    TextOverlay* diff = factory->createTextOverlay();
-    diff->setPosition(1,50);
+    score->setPosition(1,510);
 
     //Create lives overlay
     TextOverlay* lives = factory->createTextOverlay();
-    lives->setPosition(565,10);
+    lives->setPosition(1,550);
 
     //Create fps overlay
-    TextOverlay* fps = factory->createTextOverlay();
-    fps->setPosition(565,50);
+    TextOverlay* fps = factory->createTextOverlay(15);
+    fps->setPosition(1,10);
 
     //Create ammo overlay
     TextOverlay* ammo = factory->createTextOverlay();
-    ammo->setPosition(1,90);
+    ammo->setPosition(1,590);
+
+    //Create message overlay
+    TextOverlay* text = factory->createTextOverlay();
+    //Forumula to center text at x-position: screenWidth/2 - text->getTextWidth()/2 (after setting text)
+
 
     //Create background
-    //1233
+    //1233 = top pixel of perfect reset
     Background* bg = factory->createBackground();
     bg->setResetLocation(-594);
     bg->resetLocation();
@@ -112,7 +117,7 @@ void Game::gameLoop() {
     //Create player
     Car* player = factory->createCar(Car::RED);
     player->setXPos(95); player->setYPos(400);
-    player->setBoundaries(80,250,560,640);
+    player->setBoundaries(83,250,562,635);
 
     while (isPlaying)
     {
@@ -283,6 +288,11 @@ void Game::gameLoop() {
                         {
                             hitTimer->startTime();
                             playerLives--;
+
+                            text->setText("You hit a car! You are temporarily invincible!");
+                            text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
+                            textTimer->startTime();
+
                             if (playerLives < 0)
                             {
                                 isPlaying = false;
@@ -301,6 +311,10 @@ void Game::gameLoop() {
                                 lasers[j] = 0;
                                 numLasers--;
 
+                                text->setText("*Insert Explosion Sound*");
+                                text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
+                                textTimer->startTime();
+
                                 playerLasers+=2;
                                 if (playerLasers > maxLasers) playerLasers = maxLasers;
 
@@ -315,7 +329,6 @@ void Game::gameLoop() {
         //Update player & text
         player->updateLocation();
         score->setText("Score: " + std::to_string((points-points%10)/10));
-        diff->setText("Difficulty: " + std::to_string(difficulty));
         lives->setText("Lives: " + std::to_string(playerLives));
         ammo->setText("Ammo: " + std::to_string(playerLasers) + " / " + std::to_string(maxLasers));
 
@@ -325,9 +338,11 @@ void Game::gameLoop() {
         player->visualize();
         score->render();
         lives->render();
-        diff->render();
         ammo->render();
-
+        if (textTimer->getTimePassed() < textDuration)
+        {
+            text->render();
+        }
 
         while (chron->getTimePassed() < millisecondsPerFrame) {}
         if (fpsRefresh->getTimePassed() >= fpsRefreshRate) {

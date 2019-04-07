@@ -4,14 +4,23 @@
 
 
 SDLTextOverlay::SDLTextOverlay(SDLRenderer* rend) {
+    start(rend, 30);
+
+}
+
+SDLTextOverlay::SDLTextOverlay(SDLRenderer * rend, int height) {
+    start(rend, height);
+}
+
+void SDLTextOverlay::start(SDLRenderer* rend, int height) {
     renderer = rend;
-    fontsize = 15;
+    fontsize = height;
     textColor = { 215, 11 , 11}; //RED
 
 
     //Open the font
     font = TTF_OpenFont( "..//Resources//Fonts//roundFont.ttf", fontsize );
-//    font = TTF_OpenFont( "..//Resources//Fonts//pixelFont.ttf", fontsize );
+//    font = TTF_OpenFont( "..//Resources//Fonts//slkscreb.ttf", fontsize );
     if( font == NULL )
     {
         printf( "SDL_ttf Error: %s\n", TTF_GetError() );
@@ -23,8 +32,8 @@ SDLTextOverlay::SDLTextOverlay(SDLRenderer* rend) {
     {
         printf( "Warning: Linear texture filtering not enabled!" );
     }
-
 }
+
 
 SDLTextOverlay::~SDLTextOverlay() {
     free();
@@ -58,6 +67,9 @@ void SDLTextOverlay::render() {
     renderer->render(&texture, xPosition, yPosition);
 }
 
+int SDLTextOverlay::getTextWidth() {
+    return texture.getWidth();
+}
 //
 // Created by Dieter on 25/03/2019.
 //

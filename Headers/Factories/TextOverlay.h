@@ -15,6 +15,7 @@ public:
 
     virtual void setPosition(int x, int y) = 0;
     virtual void setText(std::string) = 0;
+    virtual int getTextWidth() = 0;
     virtual void render() = 0;
 };
 
