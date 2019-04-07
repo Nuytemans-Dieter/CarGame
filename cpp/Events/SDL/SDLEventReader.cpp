@@ -36,6 +36,7 @@ AbstractEventReader::event SDLEventReader::getCurrentEvent() {
 
             if (state[ SDL_SCANCODE_ESCAPE ])     return AbstractEventReader::ESC;
             else if (state[ SDL_SCANCODE_SPACE ]) return AbstractEventReader::SPACEBAR;
+            else if  ( state[ SDL_SCANCODE_S] && state [ SDL_SCANCODE_U ]) return AbstractEventReader::CHEAT_SPEEDUP;
             else return AbstractEventReader::NONE;
         }
     }

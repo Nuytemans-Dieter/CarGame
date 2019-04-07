@@ -51,6 +51,7 @@ void Game::gameLoop() {
     int carSpawnVelocity = 2;                       //This is the starting value, it will increase during gameplay
     const int spawnChance = 180;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
+    const int speedupPoints = 5000;                 //The amount of point a player needs for each speedup
 
     //Timing settings
     const double millisecondsPerFrame = 16.7;       //16.7 corresponds roughly to 60 fps
@@ -148,7 +149,7 @@ void Game::gameLoop() {
         Car::Color(rand() % numCarColors);
 
         if (difficulty != maxDifficulty && points%1000 == 0) difficulty += difficultyIncrement;
-        if (points%5000 == 0) {
+        if (points%speedupPoints == 0) {
             carSpawnVelocity += incrSpeed;
             backgroundMoveDownSpeed += incrSpeed;
             for (int i = 0; i < maxCars; i++)
@@ -264,6 +265,14 @@ void Game::gameLoop() {
                     shootTimer->startTime();
 
                     laser->playSound();
+                }
+                break;
+            case AbstractEventReader::CHEAT_SPEEDUP:
+                if (textTimer->getTimePassed() > textDuration) {
+                    points += speedupPoints - (points % speedupPoints) - 1;
+                    text->setText("You used a cheatcode! Speeding up...");
+                    text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
+                    textTimer->startTime();
                 }
                 break;
             case AbstractEventReader::NONE:

@@ -12,6 +12,7 @@ public:
         WINDOW_CLOSE,
         SPACEBAR,
         ESC,
+        CHEAT_SPEEDUP,
         NONE
     };
 
