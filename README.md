@@ -1,4 +1,4 @@
-# Generic CarGame
+Generic CarGame
 =====
 ## A simple 2D racing game, written in C++
 This project is an assignment for an advanced programming course.
