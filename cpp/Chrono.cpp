@@ -29,5 +29,9 @@ double Chrono::getTimePassed()
     if (firstDelta == 0){
         std::chrono::duration<double, std::milli> delta = currentFrame - lastFrame;
         return delta.count();
-    } else return firstDelta;
+    } else {
+        int temp = firstDelta;
+        firstDelta = 0;
+        return temp;
+    }
 }

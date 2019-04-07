@@ -48,7 +48,7 @@ void Game::gameLoop() {
     const int difficultyIncrement = 10;             //How hard the difficulty will rise upon each car spawn
     const int maxDifficulty = 150;                  //The point at which the difficulty maxes out
     int carSpawnVelocity = 2;                       //This is the starting value, it will increase during gameplay
-    const int spawnChance = 200;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
+    const int spawnChance = 180;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
 
     //Back-end settings
@@ -314,7 +314,7 @@ void Game::gameLoop() {
 
         //Update player & text
         player->updateLocation();
-        score->setText("Score: " + std::to_string(points));
+        score->setText("Score: " + std::to_string((points-points%10)/10));
         diff->setText("Difficulty: " + std::to_string(difficulty));
         lives->setText("Lives: " + std::to_string(playerLives));
         ammo->setText("Ammo: " + std::to_string(playerLasers) + " / " + std::to_string(maxLasers));
