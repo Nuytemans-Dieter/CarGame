@@ -11,6 +11,7 @@
 #include "../Background.h"
 #include "TextOverlay.h"
 #include "SDL/SDLTextOverlay.h"
+#include "../GameObjects/Laser.h"
 
 class AbstractFactory {
 public:
@@ -18,6 +19,7 @@ public:
 
     virtual Car* createCar()=0;
     virtual Car* createCar(Car::Color)=0;
+    virtual Laser* createLaser()=0;
     virtual Background* createBackground()=0;
     virtual TextOverlay* createTextOverlay()=0;
 

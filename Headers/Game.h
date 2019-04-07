@@ -20,6 +20,8 @@ public:
 private:
     AbstractFactory *factory;
     AbstractEventReader *eventReader;
+    //Remove the Car with given ID from the list, and update the 'amount of cars'-variable
+    void removeCar(int, Car* cars[]);
 };
 
 

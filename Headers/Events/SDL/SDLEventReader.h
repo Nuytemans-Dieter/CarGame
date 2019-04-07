@@ -15,6 +15,7 @@ public:
     ~SDLEventReader();
 
     AbstractEventReader::event getCurrentEvent();
+    AbstractEventReader::movement getMovement() ;
 
 };
 

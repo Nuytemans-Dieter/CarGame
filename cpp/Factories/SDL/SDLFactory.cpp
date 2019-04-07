@@ -4,6 +4,7 @@
 #include <cmath>
 #include "../../../Headers/Factories/SDL/SDLFactory.h"
 #include "../../../Headers/Factories/SDL/SDLBackground.h"
+#include "../../../Headers/Factories/SDL/SDLLaser.h"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
@@ -80,6 +81,12 @@ Car* SDLFactory::createCar() {
 Car* SDLFactory::createCar(SDLCar::Color color) {
     Car* c = new SDLCar(renderHandler, color);
     return c;
+}
+
+Laser* SDLFactory::createLaser()
+{
+    Laser* l = new SDLLaser(renderHandler);
+    return l;
 }
 
 TextOverlay *SDLFactory::createTextOverlay() {

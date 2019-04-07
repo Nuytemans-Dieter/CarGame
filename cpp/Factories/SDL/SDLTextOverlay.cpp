@@ -5,12 +5,13 @@
 
 SDLTextOverlay::SDLTextOverlay(SDLRenderer* rend) {
     renderer = rend;
-    fontsize = 20;
-    textColor = { 255 , 255 , 255 };
+    fontsize = 15;
+    textColor = { 215, 11 , 11}; //RED
 
 
     //Open the font
     font = TTF_OpenFont( "..//Resources//Fonts//roundFont.ttf", fontsize );
+//    font = TTF_OpenFont( "..//Resources//Fonts//pixelFont.ttf", fontsize );
     if( font == NULL )
     {
         printf( "SDL_ttf Error: %s\n", TTF_GetError() );
@@ -18,7 +19,7 @@ SDLTextOverlay::SDLTextOverlay(SDLRenderer* rend) {
 
 
     //Set texture filtering to linear
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "5" ) )
     {
         printf( "Warning: Linear texture filtering not enabled!" );
     }

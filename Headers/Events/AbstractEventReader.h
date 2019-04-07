@@ -10,6 +10,12 @@ class AbstractEventReader {
 public:
     enum event {
         WINDOW_CLOSE,
+        SPACEBAR,
+        ESC,
+        NONE
+    };
+
+    enum movement {
         UP,
         DOWN,
         LEFT,
@@ -18,15 +24,14 @@ public:
         UPLEFT,
         DOWNLEFT,
         DOWNRIGHT,
-        SPACEBAR,
-        ESC,
-        NONE
+        STOP
     };
 
     AbstractEventReader();
     ~AbstractEventReader();
 
     virtual event getCurrentEvent() = 0;
+    virtual movement getMovement() = 0;
 
 };
 

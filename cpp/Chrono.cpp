@@ -9,6 +9,11 @@ Chrono::Chrono() {
     lastFrame = std::chrono::system_clock::now();
 }
 
+Chrono::Chrono(double delta)
+{
+    firstDelta = delta;
+}
+
 Chrono::~Chrono() {
 
 }
@@ -21,6 +26,8 @@ void Chrono::startTime()
 double Chrono::getTimePassed()
 {
     currentFrame = std::chrono::system_clock::now();
-    std::chrono::duration<double, std::milli> delta = currentFrame - lastFrame;
-    return delta.count();
+    if (firstDelta == 0){
+        std::chrono::duration<double, std::milli> delta = currentFrame - lastFrame;
+        return delta.count();
+    } else return firstDelta;
 }

@@ -29,6 +29,7 @@ public:
      */
      Car* createCar();
      Car* createCar(SDLCar::Color);
+     Laser* createLaser();
      Background* createBackground();
      TextOverlay* createTextOverlay();
 
