@@ -10,6 +10,7 @@
 #include "../Headers/Background.h"
 #include "../Headers/Chrono.h"
 #include "../Headers/GameObjects/Laser.h"
+#include "../Headers/Sound/Sound.h"
 
 Game::Game(AbstractFactory *aFact, AbstractEventReader *aEvent) {
     factory = aFact;
@@ -30,7 +31,7 @@ int numCars;
 void Game::gameLoop() {
     //Initiaize general variables
     bool isPlaying = true;
-    int points = 0;
+    int points = 1;
     int difficulty = 0;
 
     /**
@@ -40,7 +41,7 @@ void Game::gameLoop() {
     const int playerVelocity = 5;                   //The velocity of the player (equal in all directions)
     const int laserVelocity = -7;                   //The velocity of the projectiles shot by the player
     int playerLives = 3;                            // The amount of lives a player starts with
-    const int maxLasers = 5;                        //The maximum amount of lasers
+    const int maxLasers = 10;                       //The maximum amount of lasers
     int playerLasers = maxLasers;                   //The starting amount of lasers
 
     //Difficulty settings
@@ -51,20 +52,20 @@ void Game::gameLoop() {
     const int spawnChance = 180;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
 
-    //Back-end settings
-    const int spawnLanes[4] = {108, 218, 333, 443}; //Location (X) of each lane
-    const int numCarColors = 6;                     //Must be equal to the size of the Car::Color enum!
-    int backgroundMoveDownSpeed = 12;               //The speed at which the background moves down each frame
-    const int screenHeight = 640;                   //The height of the screen
-    const int screenWidth = 640;                    //The width of the screen
-
-
     //Timing settings
     const double millisecondsPerFrame = 16.7;       //16.7 corresponds roughly to 60 fps
     const int fpsRefreshRate = 1000;                //After how many milliseconds the fps counter should update
     const int invincibleTime = 2000;                //The time in milliseconds that the player is invincible after being hit
     const int shootDelay = 500;                     //The minumum time between two shots
     const int textDuration = 2000;                  //The time (ms) in which a pop-up text will be visible
+
+    //Back-end settings
+    const int spawnLanes[4] = {108, 218, 333, 443}; //Location (X) of each lane
+    const int numCarColors = 6;                     //MUST be equal to the size of the Car::Color enum!
+    const int numSongs = 10;                        //MUST be equal to the size of the Sound::music enum!
+    int backgroundMoveDownSpeed = 12;               //The speed at which the background moves down each frame
+    const int screenHeight = 640;                   //The height of the screen
+    const int screenWidth = 640;                    //The width of the screen
 
 
     //Initialize chronos & start timing if needed
@@ -119,13 +120,33 @@ void Game::gameLoop() {
     player->setXPos(95); player->setYPos(400);
     player->setBoundaries(83,250,562,635);
 
+    /**
+     * Load sounds and music
+     */
+    Sound* music = factory->createSound();
+    music->loadMusic(Sound::music(rand() % 10));
+
+    Sound* laser = factory->createSound();
+    laser->loadSound(Sound::shoot);
+
+    Sound* explosion = factory->createSound();
+    explosion->loadSound(Sound::explosion);
+
+    Sound* invincible = factory->createSound();
+    invincible->loadSound(Sound::invincible);
+
+    Sound* speedup = factory->createSound();
+    speedup->loadSound(Sound::speedup);
+
     while (isPlaying)
     {
         //Start time measurement at the start time of each frame
         chron->startTime();
 
-        //Calculate score
-        points++;
+        //Keep playing music
+        music->playMusic();
+        Car::Color(rand() % numCarColors);
+
         if (difficulty != maxDifficulty && points%1000 == 0) difficulty += difficultyIncrement;
         if (points%5000 == 0) {
             carSpawnVelocity += incrSpeed;
@@ -137,6 +158,12 @@ void Game::gameLoop() {
                     cars[i]->setYVelocity(carSpawnVelocity);
                 }
             }
+
+            text->setText("You are speeding up!");
+            text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
+            textTimer->startTime();
+            playerLasers = maxLasers;
+            speedup->playSound();
         }
 
         //Random car generator
@@ -235,6 +262,8 @@ void Game::gameLoop() {
                     lasers[firstFree]->setXPos(player->getXPos() + player->getWidth()/2);
                     numLasers++; playerLasers--;
                     shootTimer->startTime();
+
+                    laser->playSound();
                 }
                 break;
             case AbstractEventReader::NONE:
@@ -293,6 +322,8 @@ void Game::gameLoop() {
                             text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
                             textTimer->startTime();
 
+                            invincible->playSound();
+
                             if (playerLives < 0)
                             {
                                 isPlaying = false;
@@ -311,12 +342,7 @@ void Game::gameLoop() {
                                 lasers[j] = 0;
                                 numLasers--;
 
-                                text->setText("*Insert Explosion Sound*");
-                                text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
-                                textTimer->startTime();
-
-                                playerLasers+=2;
-                                if (playerLasers > maxLasers) playerLasers = maxLasers;
+                                explosion->playSound();
 
                                 j = maxLasers;
                             }
@@ -351,6 +377,9 @@ void Game::gameLoop() {
         }
         fps->render();
         factory->finishRendering();
+
+        //Add to score
+        points++;
     }
 }
 

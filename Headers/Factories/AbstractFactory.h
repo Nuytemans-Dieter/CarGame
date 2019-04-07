@@ -12,6 +12,7 @@
 #include "TextOverlay.h"
 #include "SDL/SDLTextOverlay.h"
 #include "../GameObjects/Laser.h"
+#include "../Sound/Sound.h"
 
 class AbstractFactory {
 public:
@@ -23,6 +24,7 @@ public:
     virtual Background* createBackground()=0;
     virtual TextOverlay* createTextOverlay()=0;
     virtual TextOverlay* createTextOverlay(int) = 0; //creates a text overlay with given pixel height
+    virtual Sound* createSound()=0;
 
     //Prepare tasks that must happen before the render process (ex. clear the screen)
     virtual void startRendering()=0;

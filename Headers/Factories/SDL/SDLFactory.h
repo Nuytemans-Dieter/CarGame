@@ -7,6 +7,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <string>
 #include "../../GameObjects/Car.h"
@@ -33,6 +34,7 @@ public:
      Background* createBackground();
      TextOverlay* createTextOverlay();
      TextOverlay* createTextOverlay(int); //Creates text overlay with a given pixel height
+     Sound* createSound();
 
      //Close everything
      void quit();
