@@ -46,10 +46,11 @@ void Game::gameLoop() {
 
     //Difficulty settings
     const int maxCars = 12;                         //Maximum amount of randomly spawned enemy cars
-    const int difficultyIncrement = 10;             //How hard the difficulty will rise upon each car spawn
-    const int maxDifficulty = 150;                  //The point at which the difficulty maxes out
+    const int difficultyIncrement = 5;              //How hard the difficulty will rise upon each car spawn
+    const int maxDifficulty = 100;                  //The point at which the difficulty maxes out
+    const int difficultyFactor = 5000;              //The amount of points the player should earn before difficulty is increased
     int carSpawnVelocity = 2;                       //This is the starting value, it will increase during gameplay
-    const int spawnChance = 180;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
+    const int spawnChance = 150;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
     const int speedupPoints = 5000;                 //The amount of point a player needs for each speedup
 
@@ -148,7 +149,7 @@ void Game::gameLoop() {
         music->playMusic();
         Car::Color(rand() % numCarColors);
 
-        if (difficulty != maxDifficulty && points%1000 == 0) difficulty += difficultyIncrement;
+        if (difficulty != maxDifficulty && points % difficultyFactor == 1) difficulty += difficultyIncrement;
         if (points%speedupPoints == 0) {
             carSpawnVelocity += incrSpeed;
             backgroundMoveDownSpeed += incrSpeed;
@@ -270,8 +271,12 @@ void Game::gameLoop() {
             case AbstractEventReader::CHEAT_SPEEDUP:
                 if (textTimer->getTimePassed() > textDuration) {
                     points += speedupPoints - (points % speedupPoints) - 1;
+                    difficulty = ((points-points%difficultyFactor)/difficultyFactor)*difficultyIncrement + difficultyIncrement;
+                    if (difficulty > maxDifficulty) difficulty = maxDifficulty;
+
                     text->setText("You used a cheatcode! Speeding up...");
                     text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
+
                     textTimer->startTime();
                 }
                 break;
