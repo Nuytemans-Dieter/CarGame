@@ -41,7 +41,7 @@ bool SDLFactory::init() {
     else
     {
         //Create window
-        window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        window = SDL_CreateWindow( "Generic CarGame", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
         if( window == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -49,8 +49,11 @@ bool SDLFactory::init() {
         }
         else
         {
-            //Get window surface
-            windowSurface = SDL_GetWindowSurface( window );
+            SDL_Surface* icon = IMG_Load( "..//Resources//Icons//icon.png" );
+            if (icon != NULL) {
+                SDL_SetWindowIcon(window, icon);
+                SDL_FreeSurface(icon);
+            } else printf("Icon could not be loaded! SDL_Error: %s\n", IMG_GetError());
         }
     }
 

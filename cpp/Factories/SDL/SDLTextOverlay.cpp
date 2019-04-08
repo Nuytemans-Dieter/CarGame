@@ -20,7 +20,6 @@ void SDLTextOverlay::start(SDLRenderer* rend, int height) {
 
     //Open the font
     font = TTF_OpenFont( "..//Resources//Fonts//roundFont.ttf", fontsize );
-//    font = TTF_OpenFont( "..//Resources//Fonts//slkscreb.ttf", fontsize );
     if( font == NULL )
     {
         printf( "SDL_ttf Error: %s\n", TTF_GetError() );
@@ -61,6 +60,7 @@ void SDLTextOverlay::setText(std::string txt) {
 
     texture.setTexture(message, surfaceMessage->h, surfaceMessage->w);
 
+    SDL_FreeSurface(surfaceMessage);
 }
 
 void SDLTextOverlay::render() {
