@@ -46,7 +46,7 @@ void Game::gameLoop() {
     const int spawnChance = 150;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
     const int speedupPoints = 5000;                 //The amount of point a player needs for each speedup
-    const int shootChance = 2;                      //The chance (in %) that cars shoot a laser downward
+    const int shootChance = 2;                      //The chance (with 1000 being always true) that cars shoot a laser downward
     const int enemyLaserSpeedOffset = 2;            //The amount of speed the laser is higher than the car it spawned
 
     //Timing settings
@@ -56,7 +56,7 @@ void Game::gameLoop() {
     const int shootDelay = 500;                     //The minumum time between two shots
     const int textDuration = 2000;                  //The time (ms) in which a pop-up text will be visible
     const int minPauseTime = 500;                   //The minimum amount of pause (and play) time there should be before pause/play is allowed
-    const int laserSpawnDelay = 100;                //The minimum delay between two laser spawns
+    const int laserSpawnDelay = 200;                //The minimum delay between two laser spawns
 
     //Back-end settings
     const int spawnLanes[4] = {108, 218, 333, 443}; //Location (X) of each lane
@@ -353,7 +353,7 @@ void Game::gameLoop() {
                     numCars--;
                 } else {
                     //Randomly allow an enemy car to shoot
-                    if (rand() % 100 < shootChance)
+                    if (rand() % 1000 < shootChance)
                     {
                         for (int j = 0; j < maxEnemyLasers; j++)
                         {
@@ -367,6 +367,8 @@ void Game::gameLoop() {
                                     enemyLasers[j]->setYVelocity(carSpawnVelocity + enemyLaserSpeedOffset);
                                     enemyLasers[j]->updateLocation();
                                     enemyLasers[j]->visualize();
+
+                                    laser->playSound();
 
                                     laserTimer->startTime();
                                 }
