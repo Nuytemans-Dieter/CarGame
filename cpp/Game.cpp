@@ -335,9 +335,31 @@ void Game::gameLoop() {
             {
                 enemyLasers[i]->updateLocation();
                 enemyLasers[i]->visualize();
-                if (enemyLasers[i]->getYPos() + enemyLasers[i]->getHeight() < 0)
+
+                if (enemyLasers[i]->getYPos() > screenHeight)
                 {
                     delete enemyLasers[i]; enemyLasers[i] = 0;
+                }
+
+                if (enemyLasers[i] != 0 && player->isColliding(enemyLasers[i]))
+                {
+                    delete enemyLasers[i];
+                    enemyLasers[i] = 0;
+
+                    hitTimer->startTime();
+                    playerLives--;
+
+                    text->setText("You got hit by a laser!");
+                    text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
+                    textTimer->startTime();
+
+                    invincible->playSound();
+
+                    if (playerLives < 0)
+                    {
+                        isPlaying = false;
+                        factory->quit();
+                    }
                 }
             }
         }
@@ -353,14 +375,13 @@ void Game::gameLoop() {
                     numCars--;
                 } else {
                     //Randomly allow an enemy car to shoot
-                    if (rand() % 1000 < shootChance)
+                    if (rand() % 1000 < shootChance && cars[i]->getYPos() < screenHeight - cars[i]->getHeight())
                     {
                         for (int j = 0; j < maxEnemyLasers; j++)
                         {
                             if (enemyLasers[j] == 0)
                             {
                                 if (laserTimer->getTimePassed() > laserSpawnDelay) {
-
                                     enemyLasers[j] = factory->createLaser();
                                     enemyLasers[j]->setYPos(cars[i]->getYPos() + cars[i]->getHeight() - enemyLasers[j]->getHeight());
                                     enemyLasers[j]->setXPos(cars[i]->getXPos() + cars[i]->getWidth() / 2 - enemyLasers[j]->getWidth() / 2);
@@ -426,7 +447,6 @@ void Game::gameLoop() {
                                 if (enemyLasers[j] != 0 && cars[i]->isColliding(enemyLasers[j]))
                                 {
                                     if (cars[i]->getYPos() > enemyLasers[j]->getYPos()) {
-                                        std::cout << "Laser collide" << std::endl;
                                         delete cars[i];
                                         cars[i] = 0;
                                         numCars--;
