@@ -18,19 +18,12 @@ Game::Game(AbstractFactory *aFact, AbstractEventReader *aEvent) {
     gameLoop();
 }
 
-void Game::Game::start() {
-    //Move objects
-
-    //Collision detection
-
-    //Visualize
-}
-
 int numCars;
 
 void Game::gameLoop() {
     //Initiaize general variables
     bool isPlaying = true;
+    bool pause = false;
     int points = 1;
     int difficulty = 0;
 
@@ -76,10 +69,12 @@ void Game::gameLoop() {
     Chrono* hitTimer = new Chrono();
     Chrono* shootTimer = new Chrono();
     Chrono* textTimer = new Chrono();
+    Chrono* pauseTimer = new Chrono();
 
     fpsRefresh->startTime();
     hitTimer->startTime();
     shootTimer->startTime();
+    pauseTimer->startTime();
 
     srand(time(NULL));
 
@@ -237,52 +232,57 @@ void Game::gameLoop() {
                 player->setYVelocity(0);                    break;
         }
 
-        //Read input: other buttons of player
-        switch (eventReader->getCurrentEvent()) {
-            case AbstractEventReader::WINDOW_CLOSE:
-                factory->quit();
-                isPlaying = false;
-                break;
-            case AbstractEventReader::ESC:
-                //DO something
-                break;
-            case AbstractEventReader::SPACEBAR:
-                if(shootTimer->getTimePassed() >= shootDelay && numLasers < maxLasers && playerLasers != 0)
-                {
-                    int firstFree = 0;
-                    for (int i = 0; i < maxLasers; i++)
-                    {
-                        if (lasers[i] == 0)
-                        {
-                            firstFree = i;
-                            i = maxLasers;
-                        }
+        do {
+            //Read input->other buttons of player
+            switch (eventReader->getCurrentEvent()) {
+                case AbstractEventReader::WINDOW_CLOSE:
+                    factory->quit();
+                    pause = false;
+                    isPlaying = false;
+                    break;
+                case AbstractEventReader::ESC:
+                    if (pauseTimer->getTimePassed() > 500){
+                        pauseTimer->startTime();
+                        pause = !pause;
                     }
-                    lasers[firstFree] = factory->createLaser();
-                    lasers[firstFree]->setYVelocity(laserVelocity);
-                    lasers[firstFree]->setYPos(player->getYPos());
-                    lasers[firstFree]->setXPos(player->getXPos() + player->getWidth()/2);
-                    numLasers++; playerLasers--;
-                    shootTimer->startTime();
+                    break;
+                case AbstractEventReader::SPACEBAR:
+                    if (shootTimer->getTimePassed() >= shootDelay && numLasers < maxLasers && playerLasers != 0) {
+                        int firstFree = 0;
+                        for (int i = 0; i < maxLasers; i++) {
+                            if (lasers[i] == 0) {
+                                firstFree = i;
+                                i = maxLasers;
+                            }
+                        }
+                        lasers[firstFree] = factory->createLaser();
+                        lasers[firstFree]->setYVelocity(laserVelocity);
+                        lasers[firstFree]->setYPos(player->getYPos());
+                        lasers[firstFree]->setXPos(player->getXPos() + player->getWidth() / 2);
+                        numLasers++;
+                        playerLasers--;
+                        shootTimer->startTime();
 
-                    laser->playSound();
-                }
-                break;
-            case AbstractEventReader::CHEAT_SPEEDUP:
-                if (textTimer->getTimePassed() > textDuration) {
-                    points += speedupPoints - (points % speedupPoints) - 1;
-                    difficulty = ((points-points%difficultyFactor)/difficultyFactor)*difficultyIncrement + difficultyIncrement;
-                    if (difficulty > maxDifficulty) difficulty = maxDifficulty;
+                        laser->playSound();
+                    }
+                    break;
+                case AbstractEventReader::CHEAT_SPEEDUP:
+                    if (textTimer->getTimePassed() > textDuration) {
+                        points += speedupPoints - (points % speedupPoints) - 1;
+                        difficulty = ((points - points % difficultyFactor) / difficultyFactor) * difficultyIncrement +
+                                     difficultyIncrement;
+                        if (difficulty > maxDifficulty) difficulty = maxDifficulty;
 
-                    text->setText("You used a cheatcode! Speeding up...");
-                    text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
+                        text->setText("You used a cheatcode! Speeding up...");
+                        text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
 
-                    textTimer->startTime();
-                }
-                break;
-            case AbstractEventReader::NONE:
-                break;
-        }
+                        textTimer->startTime();
+                    }
+                    break;
+                case AbstractEventReader::NONE:
+                    break;
+            }
+        } while(pause);
 
         //Handle background
         bg->moveDown(backgroundMoveDownSpeed);

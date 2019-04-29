@@ -27,7 +27,7 @@ void SDLTextOverlay::start(SDLRenderer* rend, int height) {
 
 
     //Set texture filtering to linear
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "5" ) )
+    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
     {
         printf( "Warning: Linear texture filtering not enabled!" );
     }

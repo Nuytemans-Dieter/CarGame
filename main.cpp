@@ -13,7 +13,6 @@ int main( int argc, char *argv[] )
     AbstractFactory* aFact = new SDLFactory();
     AbstractEventReader* aEvent = new SDLEventReader();
     Game *game = new Game(aFact, aEvent);
-    game->start();
 
 
     return 0;

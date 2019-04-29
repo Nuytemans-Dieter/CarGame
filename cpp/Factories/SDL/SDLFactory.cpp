@@ -11,6 +11,9 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
 
+const int SCREEN_WIDTH_LOGICAL = 640;
+const int SCREEN_HEIGHT_LOGICAL = 640;
+
 SDL_Window* window;
 SDL_Surface* windowSurface;
 
@@ -28,6 +31,9 @@ SDLFactory::SDLFactory() {
         renderer = SDL_CreateRenderer(window,-1,0);
         renderHandler = new SDLRenderer(renderer);
     }
+
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH_LOGICAL,  SCREEN_HEIGHT_LOGICAL);
+
 }
 
 bool SDLFactory::init() {
