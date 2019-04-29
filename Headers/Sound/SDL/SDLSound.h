@@ -20,7 +20,7 @@ public:
     void playSound();
 
     void loadMusic(Sound::music);
-    void playMusic();
+    void playMusicLoop();
 
     void free();
 

@@ -33,7 +33,7 @@ void SDLSound::loadMusic(Sound::music name) {
     }
 }
 
-void SDLSound::playMusic() {
+void SDLSound::playMusicLoop() {
     if (Mix_PlayingMusic() == 0)
     {
         Mix_PlayMusic(song, -1);

@@ -33,7 +33,7 @@ void Game::gameLoop() {
     //Player settings
     const int playerVelocity = 5;                   //The velocity of the player (equal in all directions)
     const int laserVelocity = -7;                   //The velocity of the projectiles shot by the player
-    int playerLives = 3;                            // The amount of lives a player starts with
+    int playerLives = 3;                            //The amount of lives a player starts with
     const int maxLasers = 10;                       //The maximum amount of lasers
     int playerLasers = maxLasers;                   //The starting amount of lasers
 
@@ -46,6 +46,8 @@ void Game::gameLoop() {
     const int spawnChance = 150;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
     const int speedupPoints = 5000;                 //The amount of point a player needs for each speedup
+    const int shootChance = 2;                      //The chance (in %) that cars shoot a laser downward
+    const int enemyLaserSpeedOffset = 2;            //The amount of speed the laser is higher than the car it spawned
 
     //Timing settings
     const double millisecondsPerFrame = 16.7;       //16.7 corresponds roughly to 60 fps
@@ -53,15 +55,19 @@ void Game::gameLoop() {
     const int invincibleTime = 2000;                //The time in milliseconds that the player is invincible after being hit
     const int shootDelay = 500;                     //The minumum time between two shots
     const int textDuration = 2000;                  //The time (ms) in which a pop-up text will be visible
+    const int minPauseTime = 500;                   //The minimum amount of pause (and play) time there should be before pause/play is allowed
+    const int laserSpawnDelay = 100;                //The minimum delay between two laser spawns
 
     //Back-end settings
     const int spawnLanes[4] = {108, 218, 333, 443}; //Location (X) of each lane
     const int numCarColors = 6;                     //MUST be equal to the size of the Car::Color enum!
     const int numSongs = 10;                        //MUST be equal to the size of the Sound::music enum!
-    int backgroundMoveDownSpeed = 12;               //The speed at which the background moves down each frame
+    const int maxEnemyLasers = 20;                  //The max possible amount of concurrent enemy lasers
     const int screenHeight = 640;                   //The height of the screen
     const int screenWidth = 640;                    //The width of the screen
 
+    //visual settings
+    int backgroundMoveDownSpeed = 6;                //The speed at which the background moves down each frame
 
     //Initialize chronos & start timing if needed
     Chrono* chron = new Chrono();
@@ -70,17 +76,20 @@ void Game::gameLoop() {
     Chrono* shootTimer = new Chrono();
     Chrono* textTimer = new Chrono();
     Chrono* pauseTimer = new Chrono();
+    Chrono* laserTimer = new Chrono();
 
     fpsRefresh->startTime();
     hitTimer->startTime();
     shootTimer->startTime();
     pauseTimer->startTime();
+    laserTimer->startTime();
 
     srand(time(NULL));
 
     //Initialize the lists
     Car* cars [maxCars] = {0};
     Laser* lasers [maxLasers] = {0};
+    Laser* enemyLasers [maxEnemyLasers] = {0};
 
     numCars = 0;
     int numLasers = 0;
@@ -121,7 +130,7 @@ void Game::gameLoop() {
      * Load sounds and music
      */
     Sound* music = factory->createSound();
-    music->loadMusic(Sound::music(rand() % 10));
+    music->loadMusic(Sound::music(rand() % numSongs));
 
     Sound* laser = factory->createSound();
     laser->loadSound(Sound::shoot);
@@ -135,17 +144,19 @@ void Game::gameLoop() {
     Sound* speedup = factory->createSound();
     speedup->loadSound(Sound::speedup);
 
+    //Start a music loop
+    music->playMusicLoop();
+
     while (isPlaying)
     {
         //Start time measurement at the start time of each frame
         chron->startTime();
 
-        //Keep playing music
-        music->playMusic();
-        Car::Color(rand() % numCarColors);
-
+        /**
+         * Difficulty & speedup management
+         */
         if (difficulty != maxDifficulty && points % difficultyFactor == 1) difficulty += difficultyIncrement;
-        if (points%speedupPoints == 0) {
+        if (points % speedupPoints == 0) {
             carSpawnVelocity += incrSpeed;
             backgroundMoveDownSpeed += incrSpeed;
             for (int i = 0; i < maxCars; i++)
@@ -159,11 +170,14 @@ void Game::gameLoop() {
             text->setText("You are speeding up!");
             text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
             textTimer->startTime();
+
             playerLasers = maxLasers;
             speedup->playSound();
         }
 
-        //Random car generator
+        /**
+         * Random car generator
+         */
         if (numCars < maxCars && rand() % (spawnChance - difficulty) == 0)
         {
             //Find the first available place in the enemy car list
@@ -204,7 +218,9 @@ void Game::gameLoop() {
             numCars++;
         }
 
-        //Read input->Movement of player
+        /**
+         * Read input->Movement of player
+         */
         switch(eventReader->getMovement())
         {
             case AbstractEventReader::LEFT:
@@ -232,8 +248,10 @@ void Game::gameLoop() {
                 player->setYVelocity(0);                    break;
         }
 
+        /*
+         * Read input->other buttons of player (and loop while paused)
+         */
         do {
-            //Read input->other buttons of player
             switch (eventReader->getCurrentEvent()) {
                 case AbstractEventReader::WINDOW_CLOSE:
                     factory->quit();
@@ -241,7 +259,7 @@ void Game::gameLoop() {
                     isPlaying = false;
                     break;
                 case AbstractEventReader::ESC:
-                    if (pauseTimer->getTimePassed() > 500){
+                    if (pauseTimer->getTimePassed() > minPauseTime){
                         pauseTimer->startTime();
                         pause = !pause;
                     }
@@ -284,14 +302,17 @@ void Game::gameLoop() {
             }
         } while(pause);
 
-        //Handle background
+        /**
+         * Background movement
+         */
         bg->moveDown(backgroundMoveDownSpeed);
         if (bg->getLocation() >= 0) bg->resetLocation();
 
         /**
          * Move objects, perform collision detection & render enemy cars
+         * Also allow cars to shoot
          */
-        factory->startRendering();
+        factory->startRendering(); //Perform tasks to start rendering
         bg->visualize();
 
         for (int i = 0; i < maxLasers; i++)
@@ -308,6 +329,19 @@ void Game::gameLoop() {
             }
         }
 
+        for (int i = 0; i < maxEnemyLasers; i++)
+        {
+            if (enemyLasers[i] != 0)
+            {
+                enemyLasers[i]->updateLocation();
+                enemyLasers[i]->visualize();
+                if (enemyLasers[i]->getYPos() + enemyLasers[i]->getHeight() < 0)
+                {
+                    delete enemyLasers[i]; enemyLasers[i] = 0;
+                }
+            }
+        }
+
         for (int i = 0; i < maxCars; i++)
         {
             if (cars[i] != 0)
@@ -318,6 +352,27 @@ void Game::gameLoop() {
                     delete cars[i]; cars[i] = 0;
                     numCars--;
                 } else {
+                    //Randomly allow an enemy car to shoot
+                    if (rand() % 100 < shootChance)
+                    {
+                        for (int j = 0; j < maxEnemyLasers; j++)
+                        {
+                            if (enemyLasers[j] == 0)
+                            {
+                                if (laserTimer->getTimePassed() > laserSpawnDelay) {
+
+                                    enemyLasers[j] = factory->createLaser();
+                                    enemyLasers[j]->setYPos(cars[i]->getYPos() + cars[i]->getHeight() - enemyLasers[j]->getHeight());
+                                    enemyLasers[j]->setXPos(cars[i]->getXPos() + cars[i]->getWidth() / 2 - enemyLasers[j]->getWidth() / 2);
+                                    enemyLasers[j]->setYVelocity(carSpawnVelocity + enemyLaserSpeedOffset);
+                                    enemyLasers[j]->updateLocation();
+                                    enemyLasers[j]->visualize();
+
+                                    laserTimer->startTime();
+                                }
+                            }
+                        }
+                    }
                     cars[i]->visualize();
 
                     /**
@@ -359,6 +414,29 @@ void Game::gameLoop() {
                                 explosion->playSound();
 
                                 j = maxLasers;
+                            }
+                        }
+
+                        if (cars[i] != 0)
+                        {
+                            for (int j = 0; j < maxEnemyLasers; j++)
+                            {
+                                if (enemyLasers[j] != 0 && cars[i]->isColliding(enemyLasers[j]))
+                                {
+                                    if (cars[i]->getYPos() > enemyLasers[j]->getYPos()) {
+                                        std::cout << "Laser collide" << std::endl;
+                                        delete cars[i];
+                                        cars[i] = 0;
+                                        numCars--;
+
+                                        delete enemyLasers[j];
+                                        enemyLasers[j] = 0;
+
+                                        explosion->playSound();
+
+                                        j = maxEnemyLasers;
+                                    }
+                                }
                             }
                         }
                     }
