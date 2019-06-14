@@ -45,13 +45,13 @@ void Game::gameLoop() {
     int carSpawnVelocity = 2;                       //This is the starting value, it will increase during gameplay
     const int spawnChance = 150;                    //Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange
     const int incrSpeed = 2;                        //The speed that is added to enemy cars at every set interval
-    const int speedupPoints = 5000;                 //The amount of point a player needs for each speedup
+    const int speedupPoints = 5000;                 //The amount of points a player needs for each speedup
     const int shootChance = 2;                      //The chance (with 1000 being always true) that cars shoot a laser downward
     const int enemyLaserSpeedOffset = 2;            //The amount of speed the laser is higher than the car it spawned
 
     //Timing settings
     const double millisecondsPerFrame = 16.7;       //16.7 corresponds roughly to 60 fps
-    const int fpsRefreshRate = 1000;                //After how many milliseconds the fps counter should update
+    const int fpsRefreshRate = 100;                 //After how many milliseconds the fps counter should update
     const int invincibleTime = 2000;                //The time in milliseconds that the player is invincible after being hit
     const int shootDelay = 500;                     //The minumum time between two shots
     const int textDuration = 2000;                  //The time (ms) in which a pop-up text will be visible
@@ -78,13 +78,14 @@ void Game::gameLoop() {
     Chrono* pauseTimer = new Chrono();
     Chrono* laserTimer = new Chrono();
 
+    //Take a first time sample
     fpsRefresh->startTime();
     hitTimer->startTime();
     shootTimer->startTime();
     pauseTimer->startTime();
     laserTimer->startTime();
 
-    srand(time(NULL));
+    srand(time(NULL));      //Required to get a good random seed
 
     //Initialize the lists
     Car* cars [maxCars] = {0};
@@ -124,10 +125,10 @@ void Game::gameLoop() {
     //Create player
     Car* player = factory->createCar(Car::RED);
     player->setXPos(95); player->setYPos(400);
-    player->setBoundaries(83,250,562,635);
+    player->setBoundaries(83,250,562,635);      //Manually set the boundaries of the playing field
 
     /**
-     * Load sounds and music
+     * Load sounds and music so they can be played quickly in-game
      */
     Sound* music = factory->createSound();
     music->loadMusic(Sound::music(rand() % numSongs));
@@ -149,13 +150,18 @@ void Game::gameLoop() {
 
     while (isPlaying)
     {
-        //Start time measurement at the start time of each frame
+        //Start time measurement at the start time of each game tick
         chron->startTime();
 
         /**
-         * Difficulty & speedup management
+         * Difficulty & speedup (difficulty) management
          */
-        if (difficulty != maxDifficulty && points % difficultyFactor == 1) difficulty += difficultyIncrement;
+        //Increment the difficulty each time a chosen score threshold is reached (if the difficulty is not yet maxed out)
+        if (difficulty != maxDifficulty && points % difficultyFactor == 1) {
+            difficulty += difficultyIncrement;
+        }
+
+        //If the points reach a speedup threshold -> speedup all current objects!
         if (points % speedupPoints == 0) {
             carSpawnVelocity += incrSpeed;
             backgroundMoveDownSpeed += incrSpeed;
@@ -178,6 +184,9 @@ void Game::gameLoop() {
         /**
          * Random car generator
          */
+         //If the maximum amount of cars has not been exceeded and chance says that a car should spawn
+         //The lower x is in (rand() % x), the higher the chance is that a car will spawn!
+         //Because: rand()%2 would give 50% chance, rand()%3 would give 1/3 chance, etc
         if (numCars < maxCars && rand() % (spawnChance - difficulty) == 0)
         {
             //Find the first available place in the enemy car list
@@ -195,7 +204,7 @@ void Game::gameLoop() {
             Car::Color randomColor = Car::Color(rand() % numCarColors);
             //Create a car at a random location with a random velocity
             cars[firstFreeSpot] = factory->createCar(randomColor);
-            //x-locations of lanes: 440 330 215 110
+            //x-locations of lanes: spawnLanes = {440, 330, 215, 110}
             cars[firstFreeSpot]->setXPos(spawnLanes[rand() % 4]); cars[firstFreeSpot]->setYPos(-250);
             cars[firstFreeSpot]->setYVelocity(carSpawnVelocity);
 
@@ -221,6 +230,7 @@ void Game::gameLoop() {
         /**
          * Read input->Movement of player
          */
+         //Read input in all 8 directions
         switch(eventReader->getMovement())
         {
             case AbstractEventReader::LEFT:
@@ -251,6 +261,7 @@ void Game::gameLoop() {
         /*
          * Read input->other buttons of player (and loop while paused)
          */
+        //Read the pressed buttons and perform the according function
         do {
             switch (eventReader->getCurrentEvent()) {
                 case AbstractEventReader::WINDOW_CLOSE:
@@ -265,6 +276,7 @@ void Game::gameLoop() {
                     }
                     break;
                 case AbstractEventReader::SPACEBAR:
+                    //Only allow shooting if the timer has passed and the player has ammo left
                     if (shootTimer->getTimePassed() >= shootDelay && numLasers < maxLasers && playerLasers != 0) {
                         int firstFree = 0;
                         for (int i = 0; i < maxLasers; i++) {
@@ -285,12 +297,15 @@ void Game::gameLoop() {
                     }
                     break;
                 case AbstractEventReader::CHEAT_SPEEDUP:
+                    //This speedup sets the score to the next value for a speedup
+                    //Difficulty is also adjusted for consistensy purposes
                     if (textTimer->getTimePassed() > textDuration) {
                         points += speedupPoints - (points % speedupPoints) - 1;
-                        difficulty = ((points - points % difficultyFactor) / difficultyFactor) * difficultyIncrement +
-                                     difficultyIncrement;
+                        difficulty = ((points - points % difficultyFactor) / difficultyFactor) * difficultyIncrement + difficultyIncrement;
+
                         if (difficulty > maxDifficulty) difficulty = maxDifficulty;
 
+                        //Inform the player
                         text->setText("You used a cheatcode! Speeding up...");
                         text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
 
@@ -315,6 +330,7 @@ void Game::gameLoop() {
         factory->startRendering(); //Perform tasks to start rendering
         bg->visualize();
 
+        //Move the lasers of the player and delete them if they are out of bounds
         for (int i = 0; i < maxLasers; i++)
         {
             if (lasers[i] != 0)
@@ -329,6 +345,7 @@ void Game::gameLoop() {
             }
         }
 
+        //Perform collision detection for all enemy lasers with the player
         for (int i = 0; i < maxEnemyLasers; i++)
         {
             if (enemyLasers[i] != 0)
@@ -364,6 +381,7 @@ void Game::gameLoop() {
             }
         }
 
+        //Loop through all enemy cars and check collision with the player and all lasers
         for (int i = 0; i < maxCars; i++)
         {
             if (cars[i] != 0)
@@ -374,7 +392,7 @@ void Game::gameLoop() {
                     delete cars[i]; cars[i] = 0;
                     numCars--;
                 } else {
-                    //Randomly allow an enemy car to shoot
+                    //Randomly allow an enemy car to shoot a laser
                     if (rand() % 1000 < shootChance && cars[i]->getYPos() < screenHeight - cars[i]->getHeight())
                     {
                         for (int j = 0; j < maxEnemyLasers; j++)
@@ -440,6 +458,7 @@ void Game::gameLoop() {
                             }
                         }
 
+                        //Check all enemy lasers and check if they are colliding with each enemy car
                         if (cars[i] != 0)
                         {
                             for (int j = 0; j < maxEnemyLasers; j++)
@@ -466,14 +485,14 @@ void Game::gameLoop() {
             }
         }
 
-        //Update player & text
+        //Update player & text UI
         player->updateLocation();
         score->setText("Score: " + std::to_string((points-points%10)/10));
         lives->setText("Lives: " + std::to_string(playerLives));
         ammo->setText("Ammo: " + std::to_string(playerLasers) + " / " + std::to_string(maxLasers));
 
         /**
-         * Visualize
+         * Visualize everything
          */
         player->visualize();
         score->render();
@@ -484,7 +503,9 @@ void Game::gameLoop() {
             text->render();
         }
 
+        //Wait until the minimum time for a frame, or tick has passed
         while (chron->getTimePassed() < millisecondsPerFrame) {}
+        //Refresh the fps only at certain intervals, this is not game-critical at all
         if (fpsRefresh->getTimePassed() >= fpsRefreshRate) {
             fps->setText("fps: " + std::to_string( (int) round(1000 / chron->getTimePassed()) ));
             fpsRefresh->startTime();
