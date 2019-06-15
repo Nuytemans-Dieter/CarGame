@@ -58,6 +58,14 @@ void Game::gameLoop() {
     const int minPauseTime = 500;                   // The minimum amount of pause (and play) time there should be before pause/play is allowed.
     const int laserSpawnDelay = 200;                // The minimum delay between two laser spawns.
 
+    // Everything that has something to do with powerups.
+    const int maxPowerups = 5;                      // The maximum of Powerups that can be present at any given time.
+//    const int numPowerupAmmo = 5;                   // The amount of ammunition the player gets when collecting an ammo powerup.
+    const int powerupChance = 100;                  // The chance of a powerup spawning, the chance is 1/powerupChance.
+    const int ammoChance = 90;                      // The chance for a powerup to be of ammo type (/100).
+//    const int healthChance = 100 - ammoChance;      // The chance for a powerup to be of health type (/100).
+    const int powerupVelocity = 1;                  // The speed at which powerups move down.
+
     // Back-end settings.
     const int spawnLanes[4] = {108, 218, 333, 443}; // Location (X) of each lane.
     const int numCarColors = 6;                     // MUST be equal to the size of the Car::Color enum.
@@ -91,9 +99,12 @@ void Game::gameLoop() {
     Car* cars [maxCars] = {0};
     Laser* lasers [maxLasers] = {0};
     Laser* enemyLasers [maxEnemyLasers] = {0};
+    Powerup* powerups [maxPowerups] = {0};
 
+    // Keep track of list sizes.
     numCars = 0;
     int numLasers = 0;
+    int numPowerups = 0;
 
     // Create score overlay.
     TextOverlay* score = factory->createTextOverlay();
@@ -177,7 +188,7 @@ void Game::gameLoop() {
             text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
             textTimer->startTime();
 
-            playerLasers = maxLasers;
+//            playerLasers = maxLasers;
             speedup->playSound();
         }
 
@@ -225,6 +236,41 @@ void Game::gameLoop() {
             } while (isColliding);
 
             numCars++;
+        }
+
+
+        // ---------------
+        // Powerup spawner.
+        // ---------------
+        if (numPowerups < maxPowerups && rand() % powerupChance == 0)
+        {
+            // Find first free spot in the list.
+            int firstFreeSpot;
+            for (int i = 0; i < maxPowerups; i++)
+            {
+                if (powerups[i] == 0)
+                {
+                    firstFreeSpot = i;
+                    i = maxPowerups;
+                }
+            }
+
+            // Determine the type of powerup by chance.
+            int typeChance = rand()%100 + 1;    // Range 1 - 100.
+            if (typeChance < ammoChance)
+            {
+                powerups[firstFreeSpot] = factory->createPowerup(Powerup::PowerupType::AMMO);
+            } else
+            {
+                powerups[firstFreeSpot] = factory->createPowerup(Powerup::PowerupType::HEALTH);
+            }
+
+            // Set the position and speed.
+            powerups[firstFreeSpot]->setXPos(spawnLanes[rand() % 4] + 20);
+            powerups[firstFreeSpot]->setYPos(-100);
+            powerups[firstFreeSpot]->setYVelocity(powerupVelocity);
+
+            numPowerups++;
         }
 
         // ----------
@@ -327,6 +373,36 @@ void Game::gameLoop() {
         // ---------------
         factory->startRendering(); //Perform tasks to start rendering
         bg->visualize();
+
+        // Move all powerups and check collision with the player
+        for (int i = 0; i < maxPowerups; i++)
+        {
+            if (powerups[i] != 0)
+            {
+                powerups[i]->updateLocation();
+                powerups[i]->visualize();
+
+                if (powerups[i]->getYPos() > screenHeight)
+                {
+                    delete powerups[i];powerups[i] = 0;
+                    numPowerups--;
+                }
+                if (powerups[i] != 0 && player->isColliding(powerups[i]))
+                {
+                    switch(powerups[i]->getPowerup())
+                    {
+                        case Powerup::PowerupType::AMMO:
+                            if (playerLasers < maxLasers) playerLasers++;
+                            break;
+                        case Powerup::PowerupType::HEALTH:
+                            if (playerLives < 3) playerLives++;
+                            break;
+                    }
+                    delete powerups[i];powerups[i] = 0;
+                    numPowerups--;
+                }
+            }
+        }
 
         // Move the lasers of the player and delete them if they are out of bounds.
         for (int i = 0; i < maxLasers; i++)
@@ -486,7 +562,7 @@ void Game::gameLoop() {
         // Update player & text UI.
         player->updateLocation();
         score->setText("Score: " + std::to_string((points-points%10)/10));
-        lives->setText("Lives: " + std::to_string(playerLives));
+        lives->setText("Lives: " + std::to_string(playerLives) + " / 3");
         ammo->setText("Ammo: " + std::to_string(playerLasers) + " / " + std::to_string(maxLasers));
 
         // ---------------------

@@ -4,11 +4,13 @@
 
 #include "../../../Headers/Factories/SDL/SDLPowerup.h"
 
-SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType type) {
+SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType powerupType) {
     renderer = rendererIn;
+    setPowerup(powerupType);
+
     texture = new SDLTexture();
     std::string imagePath = "Powerups//";
-    switch(type)
+    switch(powerupType)
     {
         case PowerupType::AMMO:
             imagePath.append("ammo");

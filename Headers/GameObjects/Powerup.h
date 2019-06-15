@@ -19,12 +19,16 @@ public:
 
     // Create a Powerup of given type.
     Powerup(PowerupType);
-    // Render this Powerup on screen
+    // Render this Powerup on screen.
     virtual void visualize() = 0;
-
+    // Set the type of this Powerup.
+    void setPowerup(PowerupType);
+    // Get the type of this Powerup
+    PowerupType getPowerup();
     Powerup();
     ~Powerup();
-
+private:
+    PowerupType type;
 };
 
 
