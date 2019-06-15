@@ -12,18 +12,19 @@
 
 class SDLCar : public Car {
 public:
-    //Create a Car with default color
+    // Create a Car with default color.
     SDLCar(SDLRenderer*);
-    //Create a Car with a chosen color
+    // Create a Car with a chosen color.
     SDLCar(SDLRenderer*, Color);
     ~SDLCar();
 
+    // Get the path to the image of this Car's color.
     std::string getImagePath();
 
     void visualize();
 
 private:
-    //Initialize car fields
+    // Initialize car fields.
     void prepare(SDLRenderer*, Color);
 
     SDLTexture* texture;

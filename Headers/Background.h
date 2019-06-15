@@ -13,14 +13,14 @@ public:
 
     virtual void visualize() = 0;
 
-    //Gets the current Y-position of this background
+    // Gets the current Y-position of this background.
     int getLocation();
-    //Move down x pixels
+    // Move down x pixels.
     void moveDown(int x);
-    //Reset the background to the default location
+    // Reset the background to the default location.
     void resetLocation();
 
-    //Choose the Y-coordinate to which the background should reset
+    // Choose the Y-coordinate to which the background should reset.
     void setResetLocation(int);
 
 private:

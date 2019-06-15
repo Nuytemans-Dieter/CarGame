@@ -11,6 +11,7 @@
 class Laser : public GameObject {
 public:
     Laser();
+    // Visualize the laser on screen.
     virtual void visualize() = 0;
     ~Laser();
 };

@@ -11,17 +11,15 @@
 
 class Game {
 public:
-
+    // Create an instance of Game with a given factory and eventreader
     Game(AbstractFactory*, AbstractEventReader*);
-    void start();
+    // This will start the game loop.
     void gameLoop();
     ~Game();
 
 private:
     AbstractFactory *factory;
     AbstractEventReader *eventReader;
-    //Remove the Car with given ID from the list, and update the 'amount of cars'-variable
-    void removeCar(int, Car* cars[]);
 };
 
 

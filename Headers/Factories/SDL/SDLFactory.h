@@ -20,32 +20,31 @@ public:
     SDLFactory();
     ~SDLFactory();
 
-    /**
-     * Creates the game screen on which the objects will be drawn
-     */
+    // Creates the game screen on which the objects will be drawn.
     bool init();
 
-    /**
-     * Various methods to create a visual representation of game objects
-     */
-     Car* createCar();
-     Car* createCar(SDLCar::Color);
+     // -------
+     // Various methods to create a visual representation of the game object mentioned in the function name.
+     // -------
+     Car* createCar();                   // Default color will be used.
+     Car* createCar(SDLCar::Color);      // Pick your own color
      Laser* createLaser();
      Background* createBackground();
      TextOverlay* createTextOverlay();
-     TextOverlay* createTextOverlay(int); //Creates text overlay with a given pixel height
+     TextOverlay* createTextOverlay(int); // Creates text overlay with a given pixel height.
      Sound* createSound();
 
-     //Close everything
+     // Close everything.
      void quit();
 
-     //Render a message on a specified location
+     // Render a message on a specified location.
      void renderMessage(std::string, int x, int y);
 
+     // Clear the screen so that a new scene can be drawn.
      void startRendering();
+     // Update the renderer.
      void finishRendering();
 
-     bool load();
 private:
     SDL_Renderer* renderer;
     SDLRenderer* renderHandler;

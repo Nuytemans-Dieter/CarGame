@@ -14,7 +14,9 @@ public:
     SDLEventReader();
     ~SDLEventReader();
 
+    // Get an AbstractEventReader::event by reading the keyboard.
     AbstractEventReader::event getCurrentEvent();
+    // Get in which direction the arrow keys are being pressed.
     AbstractEventReader::movement getMovement() ;
 
 };

@@ -18,19 +18,22 @@ class AbstractFactory {
 public:
     AbstractFactory();
 
+    // -------
+    // Various methods to create a visual representation of the game object mentioned in the function name.
+    // -------
     virtual Car* createCar()=0;
     virtual Car* createCar(Car::Color)=0;
     virtual Laser* createLaser()=0;
     virtual Background* createBackground()=0;
     virtual TextOverlay* createTextOverlay()=0;
-    virtual TextOverlay* createTextOverlay(int) = 0; //creates a text overlay with given pixel height
+    virtual TextOverlay* createTextOverlay(int) = 0; // Creates a text overlay with given pixel height.
     virtual Sound* createSound()=0;
 
-    //Prepare tasks that must happen before the render process (ex. clear the screen)
+    // Prepare tasks that must happen before the render process (ex. clear the screen).
     virtual void startRendering()=0;
-    //Perform final tasks after rendering, including a delay (if needed)
+    // Perform final tasks after rendering, including a delay (if needed).
     virtual void finishRendering()=0;
-    //Destroy everything related to the factory
+    // Destroy everything related to the factory.
     virtual void quit()=0;
     ~AbstractFactory();
 };

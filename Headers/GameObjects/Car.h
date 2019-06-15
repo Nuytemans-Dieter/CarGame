@@ -21,6 +21,7 @@ public:
     };
 
     Car();
+    // Visualize the Car on screen.
     virtual void visualize() = 0;
     ~Car();
 };

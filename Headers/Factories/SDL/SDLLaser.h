@@ -14,6 +14,7 @@ public:
     SDLLaser(SDLRenderer*);
     ~SDLLaser();
 
+    // Render the laser on screen.
     void visualize();
 
 private:

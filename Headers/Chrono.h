@@ -10,13 +10,13 @@
 
 class Chrono {
 public:
-    //Create a Chrono
+    // Create a new Chrono.
     Chrono();
-    //Create a Chrono that will return the given double when Chrono::getTimePassed() is called for the first time
+    // Create a Chrono that will return the given double when Chrono::getTimePassed() is called for the first time.
     Chrono(double);
     ~Chrono();
     void startTime();
-    //Get the amount of time that has been passed since this function was last called
+    // Get the amount of time that has been passed since this function was last called.
     double getTimePassed();
 
 private:

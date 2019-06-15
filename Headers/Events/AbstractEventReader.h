@@ -31,7 +31,9 @@ public:
     AbstractEventReader();
     ~AbstractEventReader();
 
+    // Get an AbstractEventReader::event by reading the keyboard.
     virtual event getCurrentEvent() = 0;
+    // Get in which direction the arrow keys are being pressed.
     virtual movement getMovement() = 0;
 
 };

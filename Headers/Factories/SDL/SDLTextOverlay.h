@@ -13,19 +13,19 @@
 
 class SDLTextOverlay : public TextOverlay {
 public:
-    //Create an overlay with the default pixel height
+    // Create an overlay with the default pixel height.
     SDLTextOverlay(SDLRenderer*);
-    //Create an overlay with a given pixel height
+    // Create an overlay with a given pixel height.
     SDLTextOverlay(SDLRenderer*, int);
     ~SDLTextOverlay();
 
-    //Set the position of the text
+    // Set the position of the text.
     void setPosition(int x, int y);
-    //Set the text
+    // Set the text.
     void setText(std::string);
-    //render the text
+    // Render the text.
     void render();
-    //get the width in pixels
+    // Get the width in pixels.
     int getTextWidth();
 
 private:

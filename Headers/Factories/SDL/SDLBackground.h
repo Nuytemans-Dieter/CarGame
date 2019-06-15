@@ -14,6 +14,7 @@ class SDLBackground : public Background{
 public:
     SDLBackground(SDLRenderer*);
     ~SDLBackground();
+    // Render the background on screen.
     void visualize();
 private:
     SDLTexture* texture;

@@ -32,10 +32,14 @@ public:
 
     Sound();
     ~Sound();
-    virtual void loadSound(sound) = 0;  //Load sound (.wav)
-    virtual void loadMusic(music) = 0;  //Load music (.wav)
-    virtual void playSound() = 0;       //Play the loaded sound
-    virtual void playMusicLoop() = 0;   //Play the loaded music
+    // Load sound (.wav).
+    virtual void loadSound(sound) = 0;
+    // Load music (.wav).
+    virtual void loadMusic(music) = 0;
+    // Play the loaded sound.
+    virtual void playSound() = 0;
+    // Play the loaded music.
+    virtual void playMusicLoop() = 0;
 };
 
 

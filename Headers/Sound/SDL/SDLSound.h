@@ -16,10 +16,16 @@ public:
     SDLSound();
     ~SDLSound();
 
+    // Load a sound, requires an enum as parameter.
+    // The path will be determined automatically.
     void loadSound(Sound::sound);
+    // Play the sound that was loaded once.
     void playSound();
 
+    // Load music, requires an enum as parameter.
+    // The path will be determined automatically.
     void loadMusic(Sound::music);
+    // Play the music that was loaded in a loop.
     void playMusicLoop();
 
     void free();

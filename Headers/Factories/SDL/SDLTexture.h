@@ -25,13 +25,17 @@ public:
      */
     bool loadImage(std::string path, SDL_Renderer*);
 
-    //Deallocates image
+    // Deallocates image.
     void free();
 
+    // Get the width of the texture in pixels.
     int getWidth();
+    // Get the height of the texture in pixels.
     int getHeight();
 
+    // Returns the SDL_Texture.
     SDL_Texture* getTexture();
+    // Set the texture field to another SDL_Texture with given height and width.
     void setTexture(SDL_Texture*, int h, int w);
 
 private:

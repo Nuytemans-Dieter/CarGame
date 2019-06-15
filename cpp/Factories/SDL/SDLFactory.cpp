@@ -38,7 +38,7 @@ SDLFactory::SDLFactory() {
 
 bool SDLFactory::init() {
     bool success = true;
-    //Initialize SDL
+    // Initialize SDL.
     if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
     {
         printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
@@ -46,7 +46,7 @@ bool SDLFactory::init() {
     }
     else
     {
-        //Create window
+        // Create window.
         window = SDL_CreateWindow( "Generic CarGame", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
         if( window == NULL )
         {
@@ -69,7 +69,7 @@ bool SDLFactory::init() {
         success = false;
     }
 
-    //Initialize SDL_mixer
+    // Initialize SDL_mixer.
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
     {
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
@@ -80,15 +80,15 @@ bool SDLFactory::init() {
 }
 
 void SDLFactory::quit() {
-    //Destroy renderer
+    // Destroy renderer.
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
 
-    //Destroy window
+    // Destroy window.
     SDL_DestroyWindow( window );
     window = NULL;
 
-    //Quit SDL subsystems
+    // Quit SDL subsystems.
     SDL_Quit();
     IMG_Quit();
     Mix_Quit();
