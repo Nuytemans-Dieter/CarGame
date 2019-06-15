@@ -27,8 +27,9 @@ public:
      // Various methods to create a visual representation of the game object mentioned in the function name.
      // -------
      Car* createCar();                   // Default color will be used.
-     Car* createCar(SDLCar::Color);      // Pick your own color
+     Car* createCar(Car::Color);         // Pick your own color.
      Laser* createLaser();
+     Powerup* createPowerup(Powerup::PowerupType);
      Background* createBackground();
      TextOverlay* createTextOverlay();
      TextOverlay* createTextOverlay(int); // Creates text overlay with a given pixel height.

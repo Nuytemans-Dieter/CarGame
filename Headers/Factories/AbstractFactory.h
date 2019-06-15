@@ -13,6 +13,7 @@
 #include "SDL/SDLTextOverlay.h"
 #include "../GameObjects/Laser.h"
 #include "../Sound/Sound.h"
+#include "../GameObjects/Powerup.h"
 
 class AbstractFactory {
 public:
@@ -24,6 +25,7 @@ public:
     virtual Car* createCar()=0;
     virtual Car* createCar(Car::Color)=0;
     virtual Laser* createLaser()=0;
+    virtual Powerup* createPowerup(Powerup::PowerupType)=0;
     virtual Background* createBackground()=0;
     virtual TextOverlay* createTextOverlay()=0;
     virtual TextOverlay* createTextOverlay(int) = 0; // Creates a text overlay with given pixel height.

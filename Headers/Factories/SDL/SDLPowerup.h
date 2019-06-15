@@ -7,12 +7,21 @@
 
 
 #include "../../GameObjects/Powerup.h"
+#include "SDLTexture.h"
+#include "SDLRenderer.h"
 
 class SDLPowerup : public Powerup {
 public:
+    // Create a Powerup with a custom renderer and a powerup type
+    SDLPowerup(SDLRenderer*, Powerup::PowerupType);
+    // Render the Powerup on screen.
+    void visualize();
     SDLPowerup();
     ~SDLPowerup();
 
+private:
+    SDLTexture* texture;
+    SDLRenderer* renderer;
 
 };
 

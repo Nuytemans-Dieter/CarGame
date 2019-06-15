@@ -7,6 +7,7 @@
 #include "../../../Headers/Factories/SDL/SDLLaser.h"
 #include "../../../Headers/Sound/Sound.h"
 #include "../../../Headers/Sound/SDL/SDLSound.h"
+#include "../../../Headers/Factories/SDL/SDLPowerup.h"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
@@ -107,6 +108,11 @@ Laser* SDLFactory::createLaser()
 {
     Laser* l = new SDLLaser(renderHandler);
     return l;
+}
+
+Powerup *SDLFactory::createPowerup(Powerup::PowerupType type) {
+    Powerup* powerup = new SDLPowerup(renderHandler, type);
+    return powerup;
 }
 
 TextOverlay *SDLFactory::createTextOverlay() {

@@ -3,3 +3,38 @@
 //
 
 #include "../../../Headers/Factories/SDL/SDLPowerup.h"
+
+SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType type) {
+    renderer = rendererIn;
+    texture = new SDLTexture();
+    std::string imagePath = "Powerups//";
+    switch(type)
+    {
+        case PowerupType::AMMO:
+            imagePath.append("ammo");
+            break;
+        case PowerupType::HEALTH:
+            imagePath.append("health");
+            break;
+        case PowerupType::BOMB:
+            imagePath.append("bomb");
+            break;
+    }
+    imagePath.append(".png");
+    texture->loadImage(imagePath, renderer->getSDL_Renderer());
+}
+
+
+SDLPowerup::~SDLPowerup() {
+
+}
+
+void SDLPowerup::visualize() {
+    renderer->render(texture, getXPos(), getYPos());
+}
+
+SDLPowerup::SDLPowerup() {
+
+}
+
+

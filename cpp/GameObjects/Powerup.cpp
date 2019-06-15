@@ -3,3 +3,11 @@
 //
 
 #include "../../Headers/GameObjects/Powerup.h"
+
+Powerup::Powerup() {
+
+}
+
+Powerup::~Powerup() {
+
+}
