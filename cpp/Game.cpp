@@ -43,7 +43,7 @@ void Game::gameLoop() {
     const int maxDifficulty = 100;                  // The point at which the difficulty maxes out.
     const int difficultyFactor = 5000;              // The amount of points the player should earn before difficulty is increased.
     int carSpawnVelocity = 2;                       // This is the starting value, it will increase during gameplay.
-    const int spawnChance = 150;                    // Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange.
+    const int spawnChance = 130;                    // Not in %, but the inverse percentage. The actual chance of spawning is 1/spawnChange.
     const int incrSpeed = 2;                        // The speed that is added to enemy cars at every set interval.
     const int speedupPoints = 5000;                 // The amount of points a player needs for each speedup.
     const int shootChance = 2;                      // The chance (with 1000 being always true) that cars shoot a laser downward.
@@ -61,8 +61,8 @@ void Game::gameLoop() {
     // Everything that has something to do with powerups.
     const int maxPowerups = 5;                      // The maximum of Powerups that can be present at any given time.
 //    const int numPowerupAmmo = 5;                   // The amount of ammunition the player gets when collecting an ammo powerup.
-    const int powerupChance = 100;                  // The chance of a powerup spawning, the chance is 1/powerupChance.
-    const int ammoChance = 90;                      // The chance for a powerup to be of ammo type (/100).
+    const int powerupChance = 200;                  // The chance of a powerup spawning, the chance is 1/powerupChance.
+    const int ammoChance = 95;                      // The chance for a powerup to be of ammo type (/100).
 //    const int healthChance = 100 - ammoChance;      // The chance for a powerup to be of health type (/100).
     const int powerupVelocity = 1;                  // The speed at which powerups move down.
 
@@ -155,6 +155,9 @@ void Game::gameLoop() {
 
     Sound* speedup = factory->createSound();
     speedup->loadSound(Sound::speedup);
+
+    Sound* powerup = factory->createSound();
+    powerup->loadSound(Sound::powerup);
 
     // Start a music loop.
     music->playMusicLoop();
@@ -389,17 +392,29 @@ void Game::gameLoop() {
                 }
                 if (powerups[i] != 0 && player->isColliding(powerups[i]))
                 {
+                    bool isCollected = false;
                     switch(powerups[i]->getPowerup())
                     {
                         case Powerup::PowerupType::AMMO:
-                            if (playerLasers < maxLasers) playerLasers++;
+                            if (playerLasers < maxLasers) {
+                                playerLasers++;
+                                isCollected = true;
+                            }
                             break;
                         case Powerup::PowerupType::HEALTH:
-                            if (playerLives < 3) playerLives++;
+                            if (playerLives < 3) {
+                                playerLives++;
+                                isCollected = true;
+                            }
                             break;
                     }
-                    delete powerups[i];powerups[i] = 0;
-                    numPowerups--;
+
+                    if (isCollected) {
+                        powerup->playSound();
+                        delete powerups[i];
+                        powerups[i] = 0;
+                        numPowerups--;
+                    }
                 }
             }
         }

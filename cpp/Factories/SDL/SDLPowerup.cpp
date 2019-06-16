@@ -24,6 +24,8 @@ SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType powerupType
     }
     imagePath.append(".png");
     texture->loadImage(imagePath, renderer->getSDL_Renderer());
+    setWidth(texture->getWidth());
+    setHeight(texture->getHeight());
 }
 
 

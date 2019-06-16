@@ -27,7 +27,8 @@ public:
         shoot,
         explosion,
         speedup,
-        invincible
+        invincible,
+        powerup
     };
 
     Sound();

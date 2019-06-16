@@ -47,6 +47,7 @@ std::string SDLSound::getSoundPath(Sound::sound name) {
         case Sound::explosion:  path.append("explosion");   break;
         case Sound::speedup:    path.append("speedup");     break;
         case Sound::invincible: path.append("invincible");  break;
+        case Sound::powerup:    path.append("powerup");     break;
     }
     path.append(".wav");
     return path;
