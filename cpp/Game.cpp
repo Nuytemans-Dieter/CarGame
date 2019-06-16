@@ -41,13 +41,14 @@ void Game::gameLoop() {
     // Player settings.
     const int playerVelocity = 5;                   // The velocity of the player (equal in all directions).
     const int laserVelocity = -7;                   // The velocity of the projectiles shot by the player.
+    const int scorePerKill = 100;                   // The score the player gets when shooting an enemy.
     int playerLives = 3;                            // The amount of lives a player starts with.
     const int maxLasers = 10;                       // The maximum amount of lasers.
     int playerLasers = maxLasers;                   // The starting amount of lasers.
 
     // Difficulty settings.
     const int maxCars = 12;                         // Maximum amount of randomly spawned enemy cars.
-    const int difficultyIncrement = 5;              // How hard the difficulty will rise upon each car spawn.
+    const int difficultyIncrement = 20;             // How hard the difficulty will rise upon each car spawn.
     const int maxDifficulty = 100;                  // The point at which the difficulty maxes out.
     const int difficultyFactor = 5000;              // The amount of points the player should earn before difficulty is increased.
     int carSpawnVelocity = 2;                       // This is the starting value, it will increase during gameplay.
@@ -68,17 +69,17 @@ void Game::gameLoop() {
 
     // Everything that has something to do with powerups.
     const int maxPowerups = 5;                      // The maximum of Powerups that can be present at any given time.
-//    const int numPowerupAmmo = 5;                   // The amount of ammunition the player gets when collecting an ammo powerup.
+    //    const int numPowerupAmmo = 5;             // The amount of ammunition the player gets when collecting an ammo powerup.
     const int powerupChance = 200;                  // The chance of a powerup spawning, the chance is 1/powerupChance.
     const int ammoChance = 95;                      // The chance for a powerup to be of ammo type (/100).
-//    const int healthChance = 100 - ammoChance;      // The chance for a powerup to be of health type (/100).
+    //    const int healthChance = 100 - ammoChance;// The chance for a powerup to be of health type (/100).
     const int powerupVelocity = 1;                  // The speed at which powerups move down.
 
     // Back-end settings.
     const int spawnLanes[4] = {108, 218, 333, 443}; // Location (X) of each lane.
     const int numCarColors = 6;                     // MUST be equal to the size of the Car::Color enum.
     const int numSongs = 10;                        // MUST be equal to the size of the Sound::music enum.
-    const int maxEnemyLasers = 20;                  // The max possible amount of concurrent enemy lasers.
+    const int maxEnemyLasers = 10;                  // The max possible amount of concurrent enemy lasers.
     const int screenHeight = 640;                   // The height of the screen.
     const int screenWidth = 640;                    // The width of the screen.
 
@@ -199,6 +200,7 @@ void Game::gameLoop() {
             text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
             textTimer->startTime();
 
+            // Disabled since Powerups were added.
 //            playerLasers = maxLasers;
             speedup->playSound();
         }
@@ -224,7 +226,7 @@ void Game::gameLoop() {
 
             // Pick a random car color.
             Car::Color randomColor = Car::Color(rand() % numCarColors);
-            // Create a car at a random location with a random velocity.
+            // Create a car at a random location with a random color.
             cars[firstFreeSpot] = factory->createCar(randomColor);
             // X-locations of lanes: spawnLanes = {440, 330, 215, 110}.
             cars[firstFreeSpot]->setXPos(spawnLanes[rand() % 4]); cars[firstFreeSpot]->setYPos(-250);
@@ -550,6 +552,11 @@ void Game::gameLoop() {
                                 numLasers--;
 
                                 explosion->playSound();
+
+                                // Give the player points for a kill of difficulty level is not overwritten.
+                                if (points % difficultyFactor < (speedupPoints-scorePerKill)) {
+                                    points += scorePerKill;
+                                }
 
                                 j = maxLasers;
                             }
