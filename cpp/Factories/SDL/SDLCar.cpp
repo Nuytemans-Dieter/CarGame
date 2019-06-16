@@ -57,5 +57,5 @@ std::string SDLCar::getImagePath() {
 }
 
 SDLCar::~SDLCar() {
-
+    texture->free();
 }

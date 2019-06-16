@@ -18,7 +18,7 @@ void SDLTextOverlay::start(SDLRenderer* rend, int height) {
     textColor = { 215, 11 , 11}; //RED
 
 
-    //Open the font
+    // Open the font.
     font = TTF_OpenFont( "..//Resources//Fonts//roundFont.ttf", fontsize );
     if( font == NULL )
     {
@@ -26,7 +26,7 @@ void SDLTextOverlay::start(SDLRenderer* rend, int height) {
     }
 
 
-    //Set texture filtering to linear
+    // Set texture filtering to linear.
     if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
     {
         printf( "Warning: Linear texture filtering not enabled!" );
@@ -46,6 +46,7 @@ void SDLTextOverlay::free() {
     if (texture.getTexture() != NULL)
     {
         SDL_DestroyTexture(texture.getTexture());
+        texture.setTexture(NULL, 0, 0);
         texture.free();
     }
 }

@@ -30,7 +30,7 @@ SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType powerupType
 
 
 SDLPowerup::~SDLPowerup() {
-
+    texture->free();
 }
 
 void SDLPowerup::visualize() {
