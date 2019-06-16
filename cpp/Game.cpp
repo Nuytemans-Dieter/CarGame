@@ -12,6 +12,14 @@
 #include "../Headers/GameObjects/Laser.h"
 #include "../Headers/Sound/Sound.h"
 
+Game* Game::instance = 0;
+
+namespace gameStatus
+{
+    bool isPlaying;
+    bool pause;
+}
+
 Game::Game(AbstractFactory *aFact, AbstractEventReader *aEvent) {
     factory = aFact;
     eventReader = aEvent;
@@ -22,8 +30,8 @@ int numCars;
 
 void Game::gameLoop() {
     // Initiaize general variables.
-    bool isPlaying = true;
-    bool pause = false;
+    gameStatus::isPlaying = true;
+    gameStatus::pause = false;
     int points = 1;
     int difficulty = 0;
 
@@ -162,7 +170,7 @@ void Game::gameLoop() {
     // Start a music loop.
     music->playMusicLoop();
 
-    while (isPlaying)
+    while (gameStatus::isPlaying)
     {
         // Start time measurement at the start time of each game tick.
         chron->startTime();
@@ -315,13 +323,13 @@ void Game::gameLoop() {
             switch (eventReader->getCurrentEvent()) {
                 case AbstractEventReader::WINDOW_CLOSE:
                     factory->quit();
-                    pause = false;
-                    isPlaying = false;
+                    gameStatus::pause = false;
+                    gameStatus::isPlaying = false;
                     break;
                 case AbstractEventReader::ESC:
                     if (pauseTimer->getTimePassed() > minPauseTime){
                         pauseTimer->startTime();
-                        pause = !pause;
+                        gameStatus::pause = ! gameStatus::pause;
                     }
                     break;
                 case AbstractEventReader::SPACEBAR:
@@ -364,7 +372,7 @@ void Game::gameLoop() {
                 case AbstractEventReader::NONE:
                     break;
             }
-        } while(pause);
+        } while(gameStatus::pause);
 
         // Background movement.
         bg->moveDown(backgroundMoveDownSpeed);
@@ -463,7 +471,7 @@ void Game::gameLoop() {
 
                     if (playerLives < 0)
                     {
-                        isPlaying = false;
+                        gameStatus::isPlaying = false;
                         factory->quit();
                     }
                 }
@@ -525,7 +533,7 @@ void Game::gameLoop() {
 
                             if (playerLives < 0)
                             {
-                                isPlaying = false;
+                                gameStatus::isPlaying = false;
                                 factory->quit();
                             }
                         }
@@ -609,4 +617,10 @@ void Game::gameLoop() {
 
 Game::~Game() {
 
+}
+
+Game* Game::getInstance(AbstractFactory* af, AbstractEventReader* ae) {
+    if (instance == nullptr)
+        instance = new Game(af, ae);
+    return instance;
 }

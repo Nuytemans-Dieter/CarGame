@@ -12,7 +12,7 @@ int main( int argc, char *argv[] )
 {
     AbstractFactory* aFact = new SDLFactory();
     AbstractEventReader* aEvent = new SDLEventReader();
-    Game *game = new Game(aFact, aEvent);
+    Game *game = game->getInstance(aFact, aEvent);
 
 
     return 0;

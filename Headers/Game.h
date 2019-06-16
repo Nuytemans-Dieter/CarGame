@@ -11,15 +11,21 @@
 
 class Game {
 public:
-    // Create an instance of Game with a given factory and eventreader
-    Game(AbstractFactory*, AbstractEventReader*);
+    // Singleton pattern -> get this object if it exist, otherwise create it.
+    static Game *getInstance(AbstractFactory *, AbstractEventReader *);
+
     // This will start the game loop.
     void gameLoop();
+
     ~Game();
 
 private:
+    static Game *instance;
     AbstractFactory *factory;
     AbstractEventReader *eventReader;
+
+    // Create an instance of Game with a given factory and eventreader.
+    Game(AbstractFactory *, AbstractEventReader *);
 };
 
 
