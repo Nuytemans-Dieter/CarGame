@@ -71,7 +71,8 @@ void Game::gameLoop() {
     const int maxPowerups = 5;                      // The maximum of Powerups that can be present at any given time.
     //    const int numPowerupAmmo = 5;             // The amount of ammunition the player gets when collecting an ammo powerup.
     const int powerupChance = 200;                  // The chance of a powerup spawning, the chance is 1/powerupChance.
-    const int ammoChance = 95;                      // The chance for a powerup to be of ammo type (/100).
+    const int ammoChance = 90;                      // The chance for a powerup to be of ammo type (/100).
+    const int forcefieldChance = 5;                 // The chance for a powerup to be a forcefield (/100).
     //    const int healthChance = 100 - ammoChance;// The chance for a powerup to be of health type (/100).
     const int powerupVelocity = 1;                  // The speed at which powerups move down.
 
@@ -84,7 +85,7 @@ void Game::gameLoop() {
     const int screenWidth = 640;                    // The width of the screen.
 
     // Visual settings.
-    int backgroundMoveDownSpeed = 6;                // The speed at which the background moves down each frame.
+    int backgroundMoveDownSpeed = 3;                // The speed at which the background moves down each frame.
 
     // Initialize chronos & start timing if needed.
     Chrono* chron = new Chrono();
@@ -273,6 +274,9 @@ void Game::gameLoop() {
             if (typeChance < ammoChance)
             {
                 powerups[firstFreeSpot] = factory->createPowerup(Powerup::PowerupType::AMMO);
+            } else if (typeChance < ammoChance + forcefieldChance)
+            {
+                powerups[firstFreeSpot] = factory->createPowerup(Powerup::PowerupType::FORCEFIELD);
             } else
             {
                 powerups[firstFreeSpot] = factory->createPowerup(Powerup::PowerupType::HEALTH);
@@ -384,10 +388,10 @@ void Game::gameLoop() {
         // Move objects, perform collision detection & render enemy cars.
         // Also allow cars to shoot.
         // ---------------
-        factory->startRendering(); //Perform tasks to start rendering
+        factory->startRendering(); // Perform tasks to start rendering.
         bg->visualize();
 
-        // Move all powerups and check collision with the player
+        // Move all powerups and check collision with the player.
         for (int i = 0; i < maxPowerups; i++)
         {
             if (powerups[i] != 0)
@@ -416,6 +420,20 @@ void Game::gameLoop() {
                                 playerLives++;
                                 isCollected = true;
                             }
+                            break;
+                        case Powerup::PowerupType::FORCEFIELD:
+                            hitTimer->startTime();
+                            invincible->playSound();
+                            isCollected = true;
+
+                            // Make sure player can't take damage.
+                            hitTimer->startTime();
+
+                            // Inform the player.
+                            text->setText("You are now invincible!");
+                            text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
+                            textTimer->startTime();
+
                             break;
                     }
 

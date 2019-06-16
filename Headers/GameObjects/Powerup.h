@@ -14,7 +14,7 @@ public:
     enum PowerupType {
         HEALTH,
         AMMO,
-        BOMB
+        FORCEFIELD
     };
 
     // Create a Powerup of given type.

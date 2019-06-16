@@ -18,8 +18,8 @@ SDLPowerup::SDLPowerup(SDLRenderer* rendererIn, Powerup::PowerupType powerupType
         case PowerupType::HEALTH:
             imagePath.append("health");
             break;
-        case PowerupType::BOMB:
-            imagePath.append("bomb");
+        case PowerupType::FORCEFIELD:
+            imagePath.append("forcefield");
             break;
     }
     imagePath.append(".png");
