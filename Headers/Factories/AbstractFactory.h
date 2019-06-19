@@ -7,10 +7,8 @@
 
 
 #include "../GameObjects/Car.h"
-#include "SDL/SDLRenderer.h"
 #include "../Background.h"
 #include "TextOverlay.h"
-#include "SDL/SDLTextOverlay.h"
 #include "../GameObjects/Laser.h"
 #include "../Sound/Sound.h"
 #include "../GameObjects/Powerup.h"

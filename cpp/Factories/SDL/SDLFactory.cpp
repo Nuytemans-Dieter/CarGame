@@ -8,6 +8,7 @@
 #include "../../../Headers/Sound/Sound.h"
 #include "../../../Headers/Sound/SDL/SDLSound.h"
 #include "../../../Headers/Factories/SDL/SDLPowerup.h"
+#include "../../../Headers/Factories/SDL/SDLTextOverlay.h"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;

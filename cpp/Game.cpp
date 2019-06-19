@@ -480,19 +480,20 @@ void Game::gameLoop() {
                     delete enemyLasers[i];
                     enemyLasers[i] = 0;
 
-                    hitTimer->startTime();
-                    playerLives--;
+                    if (hitTimer->getTimePassed() > invincibleTime) {
+                        hitTimer->startTime();
+                        playerLives--;
 
-                    text->setText("You got hit by a laser!");
-                    text->setPosition(screenWidth/2 - text->getTextWidth()/2, 230);
-                    textTimer->startTime();
+                        text->setText("You got hit by a laser!");
+                        text->setPosition(screenWidth / 2 - text->getTextWidth() / 2, 230);
+                        textTimer->startTime();
 
-                    invincible->playSound();
+                        invincible->playSound();
 
-                    if (playerLives < 0)
-                    {
-                        gameStatus::isPlaying = false;
-                        factory->quit();
+                        if (playerLives < 0) {
+                            gameStatus::isPlaying = false;
+                            factory->quit();
+                        }
                     }
                 }
             }
@@ -638,6 +639,8 @@ void Game::gameLoop() {
         // Add to score.
         points++;
     }
+
+    std::cout << "Total score: " << points/10;
 }
 
 Game::~Game() {
